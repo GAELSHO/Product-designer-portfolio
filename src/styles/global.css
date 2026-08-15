@@ -13,6 +13,11 @@
   --color-ink-500: #6f6f75;
   --color-ink-700: #3a3a3e;
   --color-ink-950: #000000;
+
+  /* Alias que espera el dock de unlumen-ui (convención de shadcn):
+     habilitan `bg-background`, `text-foreground`, `border-foreground/10`, ... */
+  --color-background: #ffffff;
+  --color-foreground: #000000;
 }
 
 /* Distingue dispositivos con puntero fino (ratón) de los táctiles.

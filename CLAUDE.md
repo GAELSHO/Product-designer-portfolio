@@ -31,9 +31,10 @@ src/
   pages/      Rutas basadas en archivos: src/pages/about.astro -> /about
               proyectos/[slug].astro genera una página por proyecto
   layouts/    Envoltorios de página (BaseLayout.astro: <head>, dock, footer)
-  components/ Componentes .astro reutilizables
+  components/ Componentes reutilizables (.astro; .tsx solo para islas)
+    unlumen-ui/ Componentes bajados de un registro de shadcn — código vendorizado
   data/       proyectos.js: fuente única de los proyectos
-  lib/        Helpers TS (url.ts)
+  lib/        Helpers TS (url.ts, utils.ts)
   styles/     global.css: import de Tailwind + tokens @theme
 public/       Assets servidos tal cual (favicon, portadas, PDFs)
   proyectos/  Portadas de las cards. Hoy son SVG placeholder: al sustituirlas
@@ -95,9 +96,34 @@ lo esconde donde existe ratón.
 Empareja siempre `group-hover:` con `group-focus-visible:` para que el teclado llegue al mismo
 estado que el ratón.
 
-**Componentes.** `.astro` por defecto — el sitio es estático y casi no necesita JS de cliente. Si
-algún día hace falta interactividad de verdad, se añade el framework y se marca la isla con
-`client:*`, nunca hidratando la página entera.
+**Componentes.** `.astro` por defecto — el sitio es estático y casi no necesita JS de cliente. React
+está instalado, pero **solo para islas**: hoy la única es el dock. Nada de convertir páginas a
+`.tsx` porque sí; si un componente no necesita estado ni eventos, va en `.astro` y pesa cero.
+
+**El dock es una isla React.** `src/components/unlumen-ui/dock.tsx` es el componente de
+[unlumen.com](https://unlumen.com) traído con `npx shadcn@latest add @unlumen-ui/dock`; usa
+`motion/react` para la magnificación. Alrededor hay tres piezas:
+
+- `src/components/DockNav.tsx` declara los items y los iconos SVG. Existe porque `icon` es un
+  `ReactNode` y eso no se puede pasar como prop desde un `.astro`.
+- `src/components/Dock.astro` lo posiciona y lo envuelve en `<nav>` (el componente renderiza un
+  `div` y no aporta esa semántica). Se hidrata con `client:idle`, no `client:load`: Astro deja los
+  `<a>` en el HTML estático, así que la navegación funciona sin JS y la animación llega después.
+- `@/lib/utils` exporta `cn()` (clsx + tailwind-merge), que es lo que importan los componentes de
+  shadcn.
+
+Dos cosas que muerden si tocas esto:
+
+- El componente asume los tokens de shadcn (`bg-background`, `text-foreground`). Están declarados
+  como alias en el `@theme` de `global.css`; si los borras, el dock se queda sin colores.
+- **`dock.tsx` está modificado respecto al original**: le añadí la prop `tooltipPlacement`. El
+  original dibuja el tooltip siempre arriba, que es correcto para un dock anclado abajo tipo macOS;
+  el nuestro va fijo en el top y el tooltip se salía de la pantalla. El default (`"top"`) mantiene
+  el comportamiento de unlumen, nosotros pasamos `"bottom"`. Si algún día actualizas el componente
+  desde el registro, ese cambio se pierde — hay que volver a aplicarlo.
+
+Bajar más componentes de shadcn necesita salida a `ui.shadcn.com` y `unlumen.com`, que la política
+de red del entorno remoto bloquea. Desde una máquina local funciona normal.
 
 **Contenido que se anima ≠ contenido que no existe.** El título rotativo (`TituloRotativo.astro`)
 es el patrón a seguir: el HTML servido ya trae el texto completo (una versión plana en `sr-only`
