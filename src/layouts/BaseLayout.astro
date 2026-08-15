@@ -1,0 +1,71 @@
+---
+import '@/styles/global.css';
+import { withBase } from '@/lib/url';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Portfolio of a product designer — case studies, process and craft.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [
+  { href: '/', label: 'Inicio' },
+  { href: '/#work', label: 'Trabajo' },
+  { href: '/#about', label: 'Sobre mí' },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <header class="border-ink-200 border-b">
+      <nav
+        class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5"
+        aria-label="Principal"
+      >
+        <a href={withBase('/')} class="font-semibold tracking-tight">Gael Sho</a>
+        <ul class="text-ink-600 flex gap-6 text-sm">
+          {
+            nav.map((item) => (
+              <li>
+                <a class="hover:text-ink-900 transition-colors" href={withBase(item.href)}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </header>
+
+    <main class="mx-auto w-full max-w-5xl flex-1 px-6 py-16">
+      <slot />
+    </main>
+
+    <footer class="border-ink-200 text-ink-400 border-t">
+      <div class="mx-auto max-w-5xl px-6 py-8 text-sm">
+        © {new Date().getFullYear()} Gael Sho. Hecho con Astro.
+      </div>
+    </footer>
+  </body>
+</html>
