@@ -10,14 +10,14 @@ interface Props {
 
 const {
   title,
-  description = 'Portafolio de Gael SHO, brand y product designer: branding, web y UX/UI.',
+  description = 'Portfolio of Gael SHO, brand and product designer: branding, web and UX/UI.',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -40,7 +40,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body class="flex min-h-dvh flex-col bg-white">
+  <body class="flex min-h-dvh flex-col bg-black">
     <Dock />
 
     <main class="mx-auto w-full max-w-6xl flex-1 px-4 pt-28 pb-16 sm:px-6 sm:pt-32">

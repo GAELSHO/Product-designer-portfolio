@@ -8,10 +8,10 @@ import { withBase } from '@/lib/url';
  */
 
 const items: DockItem[] = [
-  { label: 'Inicio', href: withBase('/') },
-  { label: 'Proyectos', href: withBase('/#proyectos') },
-  { label: 'Sobre mí', href: withBase('/#sobre-mi'), separator: true },
-  { label: 'Contacto', href: 'mailto:gaelsho10@gmail.com' },
+  { label: 'Home', href: withBase('/') },
+  { label: 'Work', href: withBase('/#work') },
+  { label: 'About', href: withBase('/#about'), separator: true },
+  { label: 'Contact', href: 'mailto:gaelsho10@gmail.com' },
 ];
 
 export default function DockNav() {
@@ -24,7 +24,6 @@ export default function DockNav() {
       distance={100}
       fontSize={14}
       iconSize={40}
-      className="shadow-sm"
     />
   );
 }

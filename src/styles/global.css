@@ -5,19 +5,22 @@
 @theme {
   --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
 
-  /* Escala neutra. El sitio es blanco con texto negro; los grises son
-     para el dock, bordes y texto secundario. */
-  --color-ink-50: #f4f4f5;
-  --color-ink-100: #e7e7e9;
-  --color-ink-300: #b9b9bd;
-  --color-ink-500: #6f6f75;
-  --color-ink-700: #3a3a3e;
-  --color-ink-950: #000000;
+  /* Escala neutra. El número no es "qué tan claro" sino **cuánto contrasta
+     con el fondo**: `ink-50` apenas se despega del fondo y `ink-950` es el
+     texto principal. El sitio es negro con texto blanco, así que los valores
+     van de casi-negro a blanco; si algún día se invierte el tema, se cambian
+     estos seis valores y nada más. */
+  --color-ink-50: #131316;
+  --color-ink-100: #1d1d21;
+  --color-ink-300: #4a4a51;
+  --color-ink-500: #8b8b93;
+  --color-ink-700: #c6c6cb;
+  --color-ink-950: #ffffff;
 
   /* Alias que espera el dock de unlumen-ui (convención de shadcn):
      habilitan `bg-background`, `text-foreground`, `border-foreground/10`, ... */
-  --color-background: #ffffff;
-  --color-foreground: #000000;
+  --color-background: #000000;
+  --color-foreground: #ffffff;
 }
 
 /* Distingue dispositivos con puntero fino (ratón) de los táctiles.
@@ -28,10 +31,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Que los controles nativos (scrollbars, autofill) se pinten en oscuro. */
+    color-scheme: dark;
   }
 
   body {
-    @apply text-ink-950 font-sans bg-white antialiased;
+    @apply text-ink-950 font-sans bg-black antialiased;
   }
 
   :focus-visible {

@@ -29,7 +29,7 @@ dispara en ese push, así que el commit que subes es el que queda en producción
 ```
 src/
   pages/      Rutas basadas en archivos: src/pages/about.astro -> /about
-              proyectos/[slug].astro genera una página por proyecto
+              work/[slug].astro genera una página por proyecto
   layouts/    Envoltorios de página (BaseLayout.astro: <head>, dock, footer)
   components/ Componentes reutilizables (.astro; .tsx solo para islas)
     unlumen-ui/ Componentes bajados de un registro de shadcn — código vendorizado
@@ -42,7 +42,7 @@ public/       Assets servidos tal cual (favicon, portadas, PDFs)
 ```
 
 Para añadir un proyecto basta con un objeto más en `src/data/proyectos.js`: la home y la ruta
-`/proyectos/[slug]` salen de ahí. El primero del array se pinta a ancho completo y el resto en el
+`/work/[slug]` salen de ahí. El primero del array se pinta a ancho completo y el resto en el
 grid de dos columnas.
 
 Alias de imports: `@/*` apunta a `src/*` (definido en `tsconfig.json`). Usa `@/layouts/...` en vez
@@ -76,8 +76,12 @@ Si cambia el nombre del repo, se actualiza `base` en `astro.config.mjs` y nada m
 (colores, fuentes) se declaran en el bloque `@theme` de `src/styles/global.css` y Tailwind genera
 las utilidades: `--color-ink-600` habilita `text-ink-600`, `bg-ink-600`, `border-ink-600`.
 
-- Fondo blanco y texto negro. Usa los tokens `ink-*` para grises; evita colores arbitrarios tipo
-  `text-[#333]`.
+- Fondo negro y texto blanco. Usa los tokens `ink-*` para los grises; evita colores arbitrarios
+  tipo `text-[#333]`. En la escala `ink-*` el número **no** es "qué tan claro" sino cuánto
+  contrasta con el fondo: `ink-50` apenas se despega del negro, `ink-950` es el blanco del texto.
+  Escrito así, invertir el tema es cambiar seis valores en `@theme` y nada más.
+- Cuidado con las sombras: sobre fondo negro no se ven. Para separar algo del fondo se usa
+  geometría (tamaño, espaciado) o un borde claro, no `shadow-*`.
 - Tipografía: **solo Poppins** (se carga desde Google Fonts en `BaseLayout`). Los pesos en uso son
   300 / 400 / 600 / 700; si necesitas otro, añádelo a la URL de la fuente o no cargará.
 - Utilidades en el markup. `@apply` solo en `global.css` para estilos base (`body`, `:focus-visible`).
@@ -149,8 +153,10 @@ schema en Zod, no como `.astro` sueltos con el texto incrustado.
 cuando aporta algo distinto al genérico). Un solo `<h1>` por página, jerarquía de headings sin
 saltos, `alt` en todas las imágenes con contenido y `alt=""` en las decorativas.
 
-**Idioma.** El sitio está en español (`<html lang="es">`); mantén copy y nombres de rutas en
-español y consistentes.
+**Idioma.** El sitio está en inglés (`<html lang="en">`): todo lo que ve el visitante va en inglés
+—copy, `alt`, `aria-label`, títulos de proyecto y nombres de ruta (`/work/[slug]`, `#about`)—.
+El código no: nombres de archivo, variables y comentarios siguen en español, que es el idioma en
+el que se trabaja el repo. La frontera es "¿esto se renderiza?": si sí, inglés.
 
 ## Deploy
 

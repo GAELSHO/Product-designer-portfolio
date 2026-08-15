@@ -14,8 +14,8 @@ const [destacado, ...resto] = proyectos;
     <TituloRotativo />
   </header>
 
-  <section id="proyectos" class="scroll-mt-28">
-    <h2 class="sr-only">Proyectos</h2>
+  <section id="work" class="scroll-mt-28">
+    <h2 class="sr-only">Selected work</h2>
 
     <div class="grid gap-4 sm:gap-6">
       {destacado && <TarjetaProyecto proyecto={destacado} destacada />}
@@ -32,10 +32,11 @@ const [destacado, ...resto] = proyectos;
     </div>
   </section>
 
-  <section id="sobre-mi" class="mt-24 max-w-2xl scroll-mt-28">
-    <h2 class="text-ink-500 text-sm font-medium tracking-widest uppercase">Sobre mí</h2>
+  <section id="about" class="mt-24 max-w-2xl scroll-mt-28">
+    <h2 class="text-ink-500 text-sm font-medium tracking-widest uppercase">About</h2>
     <p class="mt-6 text-lg text-pretty">
-      Escribe aquí tu bio: en qué tipo de producto trabajas, cómo trabajas y qué buscas ahora mismo.
+      Write your bio here: what kind of product you work on, how you work, and what you are looking
+      for right now.
     </p>
     <a class="mt-6 inline-block font-medium underline underline-offset-4" href="mailto:gaelsho10@gmail.com">
       gaelsho10@gmail.com
