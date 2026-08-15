@@ -16,6 +16,14 @@ GitHub Pages desde el repo `GAELSHO/Product-designer-portfolio`.
 Antes de dar por terminado un cambio: `npm run build`. Es lo mismo que corre CI, y falla ahí por
 las mismas razones.
 
+## Git: se trabaja directo en `main`
+
+Nada de ramas de feature ni pull requests salvo que se pidan explícitamente: commit y push a `main`.
+
+Ojo con lo que eso implica: **cada push a `main` publica el sitio**. `.github/workflows/deploy.yml`
+dispara en ese push, así que el commit que subes es el que queda en producción. Corre
+`npm run build` antes de pushear — no hay revisión intermedia que atrape un build roto.
+
 ## Estructura
 
 ```
