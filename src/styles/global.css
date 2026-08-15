@@ -28,6 +28,17 @@
    contenido queda siempre visible en lugar de esperar un hover que no llega. */
 @custom-variant hover-device (@media (hover: hover) and (pointer: fine));
 
+/* Los componentes de shadcn no solo usan las clases `bg-background` /
+   `text-foreground`: algunos leen las variables crudas `var(--foreground)`
+   desde JS o desde un `style`. Tailwind v4 genera `--color-foreground` a
+   partir del `@theme`, no `--foreground`, así que aquí van los dos alias.
+   Sin esto, el barrido de `DiaTextReveal` termina en un color inválido y el
+   texto se queda transparente. */
+:root {
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

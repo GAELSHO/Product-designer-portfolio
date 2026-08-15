@@ -32,7 +32,8 @@ src/
               work/[slug].astro genera una página por proyecto
   layouts/    Envoltorios de página (BaseLayout.astro: <head>, dock, footer)
   components/ Componentes reutilizables (.astro; .tsx solo para islas)
-    unlumen-ui/ Componentes bajados de un registro de shadcn — código vendorizado
+    unlumen-ui/ Dock de unlumen.com — código vendorizado
+    vendor/     Otros componentes de terceros pegados tal cual (DiaTextReveal)
   data/       proyectos.js: fuente única de los proyectos
   lib/        Helpers TS (url.ts, utils.ts)
   styles/     global.css: import de Tailwind + tokens @theme
@@ -101,8 +102,12 @@ Empareja siempre `group-hover:` con `group-focus-visible:` para que el teclado l
 estado que el ratón.
 
 **Componentes.** `.astro` por defecto — el sitio es estático y casi no necesita JS de cliente. React
-está instalado, pero **solo para islas**: hoy la única es el dock. Nada de convertir páginas a
-`.tsx` porque sí; si un componente no necesita estado ni eventos, va en `.astro` y pesa cero.
+está instalado, pero **solo para islas**: hoy son dos, el dock y la palabra que rota en el título.
+Nada de convertir páginas a `.tsx` porque sí; si un componente no necesita estado ni eventos, va en
+`.astro` y pesa cero.
+
+Cada isla nueva arrastra su coste: el runtime de React ya son ~60KB gzip y `motion` otros ~48KB,
+compartidos entre todas. Antes de añadir una tercera, comprueba que el efecto no salga en CSS.
 
 **El dock es una isla React.** `src/components/unlumen-ui/dock.tsx` es el componente de
 [unlumen.com](https://unlumen.com) traído con `npx shadcn@latest add @unlumen-ui/dock`; usa
@@ -139,12 +144,26 @@ Dos cosas que muerden si tocas esto:
 Bajar más componentes de shadcn necesita salida a `ui.shadcn.com` y `unlumen.com`, que la política
 de red del entorno remoto bloquea. Desde una máquina local funciona normal.
 
-**Contenido que se anima ≠ contenido que no existe.** El título rotativo (`TituloRotativo.astro`)
-es el patrón a seguir: el HTML servido ya trae el texto completo (una versión plana en `sr-only`
-para buscadores y lectores de pantalla, más las tres palabras con la primera activa por CSS). El
-script solo va alternando un `data-activa`. Sin JS el título se ve entero y quieto; nada depende de
-que el script llegue a ejecutarse. Si añades algo animado, hazlo así y respeta
-`prefers-reduced-motion`.
+**Contenido que se anima ≠ contenido que no existe.** El HTML servido tiene que traer el contenido
+aunque el JS no llegue nunca. El título (`TituloRotativo.astro`) es el patrón: una versión plana en
+`sr-only` para buscadores y lectores de pantalla, y la parte visual con `aria-hidden` donde Astro
+pre-renderiza la primera palabra.
+
+La palabra que rota es la segunda isla: `TituloSweep.tsx` envuelve `DiaTextReveal`
+(`components/vendor/`), que hace a la vez el barrido de color y el cambio de palabra. Dos trampas
+de ese componente, ya resueltas, que conviene conocer antes de tocarlo:
+
+- Pinta el texto con `color: transparent` y lo revela con un degradado. **Sin JS la palabra sería
+  invisible**, así que `TituloRotativo.astro` lleva un `<noscript>` que la devuelve a blanco sólido.
+  Cualquier componente que revele texto con `background-clip` necesita ese mismo respaldo.
+- Su `textColor` por defecto es `var(--foreground)`, y Tailwind v4 genera `--color-foreground`, no
+  `--foreground`. Por eso `global.css` declara los dos alias en `:root`; si los borras, el texto
+  termina el barrido en un color inválido y se queda transparente.
+
+`fixedWidth` reserva el ancho de la palabra más larga para que el titular no se re-centre en cada
+cambio. La cadencia son `duration` + `repeatDelay` (1.5s + 1s = una palabra cada 2.5s).
+
+`prefers-reduced-motion` lo respeta el propio componente: deja el texto sólido y no rota.
 
 **Contenido.** Los case studies largos van como colecciones de contenido (`src/content/`) con
 schema en Zod, no como `.astro` sueltos con el texto incrustado.
