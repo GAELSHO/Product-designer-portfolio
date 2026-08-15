@@ -13,7 +13,8 @@ import {
 import { cn } from "@/lib/utils";
 
 export interface DockItem {
-  icon: React.ReactNode;
+  /** opcional en `variant="text"`, donde se pinta `label` en su lugar */
+  icon?: React.ReactNode;
   label: string;
   /** if provided, item renders as an `<a>` */
   href?: string;
@@ -44,6 +45,18 @@ export interface DockProps {
    * @default "top"
    */
   tooltipPlacement?: "top" | "bottom";
+  /**
+   * AÑADIDO (no viene de unlumen-ui): qué se pinta en cada item.
+   * - "icons": el original. Items cuadrados que crecen en ancho y alto, y
+   *   tooltip con el label al hacer hover.
+   * - "text": se pinta `label` como texto y lo que se magnifica es el cuerpo
+   *   de letra — al crecer empuja a los vecinos igual que los iconos. La
+   *   altura del dock no cambia y no hay tooltip: el nombre ya está a la vista.
+   * @default "icons"
+   */
+  variant?: "icons" | "text";
+  /** tamaño base del texto en px, solo con `variant="text"` — @default 14 */
+  fontSize?: number;
   springOptions?: SpringOptions;
   className?: string;
 }
@@ -73,6 +86,8 @@ function DockIcon({
   springOptions,
   onHover,
   iconRef: externalIconRef,
+  variant,
+  fontSize,
 }: {
   item: DockItem;
   mouseX: ReturnType<typeof useMotionValue<number>>;
@@ -84,6 +99,8 @@ function DockIcon({
   springOptions: SpringOptions;
   onHover: (ref: React.RefObject<HTMLDivElement | null> | null) => void;
   iconRef: React.RefObject<HTMLDivElement | null>;
+  variant: "icons" | "text";
+  fontSize: number;
 }) {
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
@@ -109,7 +126,34 @@ function DockIcon({
   const width = useSpring(widthRaw, springOptions);
   const height = useSpring(heightRaw, springOptions);
 
+  // Solo se usa en variant="text": el ancho del item lo da el propio texto,
+  // así que magnificar el cuerpo de letra basta para empujar a los vecinos.
+  const fontSizeRaw = useTransform(distanceFromMouse, (d) => fontSize * gaussian(d));
+  const fontSizeSpring = useSpring(fontSizeRaw, springOptions);
+
   const Tag = item.href ? "a" : "button";
+
+  if (variant === "text") {
+    return (
+      <div ref={wrapperRef} className="relative flex items-center justify-center">
+        <Tag
+          href={item.href}
+          onClick={item.onClick}
+          style={{ borderRadius, height: iconSize }}
+          className={cn(
+            "flex items-center justify-center px-3 whitespace-nowrap",
+            "text-foreground/70 transition-colors duration-150",
+            "hover:bg-foreground/[0.06] hover:text-foreground",
+            "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground/20",
+          )}
+        >
+          <motion.span style={{ fontSize: fontSizeSpring }} className="leading-none font-medium">
+            {item.label}
+          </motion.span>
+        </Tag>
+      </div>
+    );
+  }
 
   return (
     // fixed height in-flow; width animates to push neighbors
@@ -161,6 +205,8 @@ export function Dock({
   borderRadius = 16,
   alwaysShowLabels = false,
   tooltipPlacement = "top",
+  variant = "icons",
+  fontSize = 14,
   springOptions = DEFAULT_SPRING,
   className,
 }: DockProps) {
@@ -212,7 +258,9 @@ export function Dock({
     <motion.div
       ref={dockRef}
       className={cn(
-        "relative flex items-end overflow-visible border border-foreground/[0.08] bg-background/80 px-2 py-2 shadow-none hover:shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] transition-shadow duration-200 backdrop-blur-xl",
+        "relative flex overflow-visible",
+        variant === "text" ? "items-center" : "items-end",
+        "border border-foreground/[0.08] bg-background/80 px-2 py-2 shadow-none hover:shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_2px_8px_rgba(0,0,0,0.04),0_8px_24px_rgba(0,0,0,0.06)] transition-shadow duration-200 backdrop-blur-xl",
         className,
       )}
       style={{ gap, borderRadius }}
@@ -232,12 +280,15 @@ export function Dock({
             springOptions={springOptions}
             onHover={handleHover}
             iconRef={iconRefs.current[i]}
+            variant={variant}
+            fontSize={fontSize}
           />
           {item.separator && <DockSeparator />}
         </React.Fragment>
       ))}
 
-      {!alwaysShowLabels && (
+      {/* En variant="text" el label ya está a la vista: el tooltip sobra. */}
+      {!alwaysShowLabels && variant !== "text" && (
         <AnimatePresence>
           {hoveredIndex !== null && (
             <motion.div

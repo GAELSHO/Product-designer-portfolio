@@ -11,12 +11,23 @@ import DockNav from '@/components/DockNav';
   se activan cuando el navegador está desocupado.
 */}
 {/*
-  `top-10` en desktop y no `top-4`: al magnificar, el icono crece hacia arriba
-  (va anclado por abajo) y con el dock pegado al borde se recortaba. En móvil
-  no hay puntero, así que no hay magnificación y basta con `top-6`.
+  Con los items en texto el dock no cambia de alto al magnificar, así que
+  puede ir pegado arriba. Ojo si algún día se vuelve a `variant="icons"`:
+  los iconos crecen hacia arriba desde su base y necesitan ~40px de aire,
+  o se recortan contra el borde de la pantalla.
 */}
-<div class="pointer-events-none fixed inset-x-0 top-6 z-50 flex justify-center px-4 sm:top-10">
-  <nav class="pointer-events-auto max-w-full" aria-label="Principal">
+<div class="pointer-events-none fixed inset-x-0 top-6 z-50 flex justify-center px-4">
+  {/*
+    Con los items en texto el dock mide ~370px: entra entero a partir de
+    ~360px de viewport. Por debajo de eso (móviles de 320px) desborda la
+    píldora, así que se desplaza en horizontal en vez de derramarse.
+    Recortar aquí es seguro porque en `variant="text"` el dock no crece en
+    alto ni dibuja tooltip — con los iconos originales esto los cortaría.
+  */}
+  <nav
+    class="pointer-events-auto max-w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    aria-label="Principal"
+  >
     <DockNav client:idle />
   </nav>
 </div>

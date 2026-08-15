@@ -104,8 +104,8 @@ está instalado, pero **solo para islas**: hoy la única es el dock. Nada de con
 [unlumen.com](https://unlumen.com) traído con `npx shadcn@latest add @unlumen-ui/dock`; usa
 `motion/react` para la magnificación. Alrededor hay tres piezas:
 
-- `src/components/DockNav.tsx` declara los items y los iconos SVG. Existe porque `icon` es un
-  `ReactNode` y eso no se puede pasar como prop desde un `.astro`.
+- `src/components/DockNav.tsx` declara los items. Es el archivo que se toca para añadir o quitar
+  entradas del menú.
 - `src/components/Dock.astro` lo posiciona y lo envuelve en `<nav>` (el componente renderiza un
   `div` y no aporta esa semántica). Se hidrata con `client:idle`, no `client:load`: Astro deja los
   `<a>` en el HTML estático, así que la navegación funciona sin JS y la animación llega después.
@@ -116,11 +116,21 @@ Dos cosas que muerden si tocas esto:
 
 - El componente asume los tokens de shadcn (`bg-background`, `text-foreground`). Están declarados
   como alias en el `@theme` de `global.css`; si los borras, el dock se queda sin colores.
-- **`dock.tsx` está modificado respecto al original**: le añadí la prop `tooltipPlacement`. El
-  original dibuja el tooltip siempre arriba, que es correcto para un dock anclado abajo tipo macOS;
-  el nuestro va fijo en el top y el tooltip se salía de la pantalla. El default (`"top"`) mantiene
-  el comportamiento de unlumen, nosotros pasamos `"bottom"`. Si algún día actualizas el componente
-  desde el registro, ese cambio se pierde — hay que volver a aplicarlo.
+- **`dock.tsx` está modificado respecto al original.** Son dos props añadidas, ambas aditivas: con
+  los valores por defecto el componente se comporta exactamente como el de unlumen. Si algún día lo
+  actualizas desde el registro, estos cambios se pierden y hay que volver a aplicarlos.
+
+  - `variant` (`"icons"` | `"text"`, default `"icons"`). El original pinta iconos en items
+    cuadrados que crecen en ancho y alto. Nosotros usamos `"text"`: se pinta el `label` y lo que se
+    magnifica es el cuerpo de letra, que al crecer empuja a los vecinos igual que los iconos. El
+    dock no cambia de alto y no dibuja tooltip, porque el nombre ya está a la vista. `fontSize`
+    (default 14) es el tamaño base de ese texto.
+  - `tooltipPlacement` (`"top"` | `"bottom"`, default `"top"`). Hoy no se usa —en modo texto no hay
+    tooltip— pero hace falta si se vuelve a `"icons"`: el original ancla el tooltip arriba, que es
+    correcto para un dock tipo macOS pegado abajo, y con el nuestro fijo en el top se salía de la
+    pantalla.
+
+  La magnificación baja de 1.8 a 1.45 en `DockNav`: sobre texto, 1.8 se ve desproporcionado.
 
 Bajar más componentes de shadcn necesita salida a `ui.shadcn.com` y `unlumen.com`, que la política
 de red del entorno remoto bloquea. Desde una máquina local funciona normal.
