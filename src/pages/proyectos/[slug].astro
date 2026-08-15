@@ -1,0 +1,41 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { withBase } from '@/lib/url';
+import { proyectos } from '@/data/proyectos.js';
+
+// Página mínima para que los links de las cards resuelvan. El case study
+// largo va como colección de contenido (src/content/), no aquí.
+export function getStaticPaths() {
+  return proyectos.map((proyecto) => ({
+    params: { slug: proyecto.slug },
+    props: { proyecto },
+  }));
+}
+
+const { proyecto } = Astro.props;
+---
+
+<BaseLayout title={`${proyecto.titulo} — Gael SHO`} description={proyecto.descripcion}>
+  <article>
+    <a class="text-ink-500 hover:text-ink-950 text-sm transition-colors" href={withBase('/#proyectos')}>
+      ← Proyectos
+    </a>
+
+    <h1 class="mt-6 text-5xl font-semibold tracking-tight sm:text-7xl">{proyecto.titulo}</h1>
+    <p class="text-ink-700 mt-4 max-w-2xl text-lg text-pretty">{proyecto.descripcion}</p>
+
+    <ul class="mt-6 flex flex-wrap gap-2">
+      {
+        proyecto.tags.map((tag) => (
+          <li class="border-ink-300 text-ink-700 rounded-full border px-4 py-1.5 text-sm">{tag}</li>
+        ))
+      }
+    </ul>
+
+    <img
+      src={withBase(proyecto.portada)}
+      alt={proyecto.portadaAlt}
+      class="mt-12 aspect-[16/9] w-full rounded-3xl object-cover sm:rounded-[2rem]"
+    />
+  </article>
+</BaseLayout>

@@ -1,64 +1,41 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import TituloRotativo from '@/components/TituloRotativo.astro';
+import TarjetaProyecto from '@/components/TarjetaProyecto.astro';
+import { proyectos } from '@/data/proyectos.js';
 
-const projects = [
-  {
-    title: 'Proyecto uno',
-    summary: 'Rediseño de un flujo de onboarding que redujo el abandono a la mitad.',
-    tags: ['Product design', 'Research'],
-  },
-  {
-    title: 'Proyecto dos',
-    summary: 'Design system multiplataforma para un equipo de 30 personas.',
-    tags: ['Design systems', 'Figma'],
-  },
-  {
-    title: 'Proyecto tres',
-    summary: 'App de datos: de un dashboard saturado a tres decisiones claras.',
-    tags: ['Data viz', 'UX'],
-  },
-];
+const [destacado, ...resto] = proyectos;
 ---
 
-<BaseLayout title="Gael Sho — Product Designer">
-  <section class="max-w-2xl">
-    <h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-      Diseño producto digital de principio a fin.
-    </h1>
-    <p class="text-ink-600 mt-6 text-lg text-pretty">
-      Product designer centrado en investigación, sistemas de diseño e interfaces que la gente
-      entiende a la primera.
-    </p>
-  </section>
+<BaseLayout title="Gael SHO | Brand Designer">
+  <header class="pb-14 sm:pb-20">
+    <TituloRotativo />
+  </header>
 
-  <section id="work" class="mt-20 scroll-mt-20">
-    <h2 class="text-ink-400 text-sm font-medium tracking-widest uppercase">Trabajo seleccionado</h2>
-    <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <section id="proyectos" class="scroll-mt-28">
+    <h2 class="sr-only">Proyectos</h2>
+
+    <div class="grid gap-4 sm:gap-6">
+      {destacado && <TarjetaProyecto proyecto={destacado} destacada />}
+
       {
-        projects.map((project) => (
-          <li class="border-ink-200 hover:border-accent-400 rounded-xl border p-6 transition-colors">
-            <h3 class="font-medium">{project.title}</h3>
-            <p class="text-ink-600 mt-2 text-sm">{project.summary}</p>
-            <ul class="mt-4 flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <li class="bg-ink-200/60 text-ink-600 rounded-full px-2.5 py-1 text-xs">{tag}</li>
-              ))}
-            </ul>
-          </li>
-        ))
+        resto.length > 0 && (
+          <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+            {resto.map((proyecto) => (
+              <TarjetaProyecto proyecto={proyecto} />
+            ))}
+          </div>
+        )
       }
-    </ul>
+    </div>
   </section>
 
-  <section id="about" class="mt-20 max-w-2xl scroll-mt-20">
-    <h2 class="text-ink-400 text-sm font-medium tracking-widest uppercase">Sobre mí</h2>
-    <p class="text-ink-600 mt-6 text-pretty">
+  <section id="sobre-mi" class="mt-24 max-w-2xl scroll-mt-28">
+    <h2 class="text-ink-500 text-sm font-medium tracking-widest uppercase">Sobre mí</h2>
+    <p class="mt-6 text-lg text-pretty">
       Escribe aquí tu bio: en qué tipo de producto trabajas, cómo trabajas y qué buscas ahora mismo.
     </p>
-    <a
-      class="text-accent-600 mt-6 inline-block font-medium hover:underline"
-      href="mailto:gaelsho10@gmail.com"
-    >
+    <a class="mt-6 inline-block font-medium underline underline-offset-4" href="mailto:gaelsho10@gmail.com">
       gaelsho10@gmail.com
     </a>
   </section>

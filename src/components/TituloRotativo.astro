@@ -1,0 +1,61 @@
+---
+/**
+ * Título del header. La palabra central rota entre disciplinas cada 2.5s.
+ *
+ * El HTML que se sirve ya contiene el título completo dos veces:
+ * - una versión plana en `sr-only`, que es la que leen buscadores y lectores
+ *   de pantalla (la parte animada va con `aria-hidden`, para que nadie escuche
+ *   "Brand WEB UX/UI" seguido ni oiga el texto cambiar solo);
+ * - la versión visual, con las tres palabras ya en el DOM y la primera activa
+ *   por CSS. Sin JavaScript el título se queda quieto en "Brand Designer", que
+ *   es un estado válido, no una caja vacía.
+ */
+const palabras = ['Brand', 'WEB', 'UX/UI'];
+const textoPlano = `Gael SHO | ${palabras.join(', ')} Designer`;
+---
+
+<h1 class="text-center text-4xl font-light tracking-tight text-balance sm:text-6xl lg:text-7xl">
+  <span class="sr-only">{textoPlano}</span>
+
+  <span
+    aria-hidden="true"
+    class="inline-flex flex-wrap items-baseline justify-center gap-x-[0.28em] gap-y-1"
+  >
+    <span class="font-bold">Gael SHO |</span>
+
+    <span class="inline-grid justify-items-center" data-rotador>
+      {
+        palabras.map((palabra, i) => (
+          <span
+            class="opacity-0 transition-opacity duration-700 ease-in-out [grid-area:1/1] data-[activa]:opacity-100"
+            data-palabra
+            data-activa={i === 0 ? '' : undefined}
+          >
+            {palabra}
+          </span>
+        ))
+      }
+    </span>
+
+    <span>Designer</span>
+  </span>
+</h1>
+
+<script>
+  const INTERVALO_MS = 2500;
+
+  for (const rotador of document.querySelectorAll('[data-rotador]')) {
+    const palabras = rotador.querySelectorAll<HTMLElement>('[data-palabra]');
+    if (palabras.length < 2) continue;
+
+    // Con "reducir movimiento" activo se queda la primera palabra fija.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) continue;
+
+    let activa = 0;
+    setInterval(() => {
+      palabras[activa].removeAttribute('data-activa');
+      activa = (activa + 1) % palabras.length;
+      palabras[activa].setAttribute('data-activa', '');
+    }, INTERVALO_MS);
+  }
+</script>

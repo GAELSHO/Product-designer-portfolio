@@ -1,5 +1,6 @@
 ---
 import '@/styles/global.css';
+import Dock from '@/components/Dock.astro';
 import { withBase } from '@/lib/url';
 
 interface Props {
@@ -9,15 +10,10 @@ interface Props {
 
 const {
   title,
-  description = 'Portfolio of a product designer — case studies, process and craft.',
+  description = 'Portafolio de Gael SHO, brand y product designer: branding, web y UX/UI.',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const nav = [
-  { href: '/', label: 'Inicio' },
-  { href: '/#work', label: 'Trabajo' },
-  { href: '/#about', label: 'Sobre mí' },
-];
 ---
 
 <!doctype html>
@@ -31,41 +27,28 @@ const nav = [
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <meta name="generator" content={Astro.generator} />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body class="flex min-h-dvh flex-col">
-    <header class="border-ink-200 border-b">
-      <nav
-        class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5"
-        aria-label="Principal"
-      >
-        <a href={withBase('/')} class="font-semibold tracking-tight">Gael Sho</a>
-        <ul class="text-ink-600 flex gap-6 text-sm">
-          {
-            nav.map((item) => (
-              <li>
-                <a class="hover:text-ink-900 transition-colors" href={withBase(item.href)}>
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-    </header>
+  <body class="flex min-h-dvh flex-col bg-white">
+    <Dock />
 
-    <main class="mx-auto w-full max-w-5xl flex-1 px-6 py-16">
+    <main class="mx-auto w-full max-w-6xl flex-1 px-4 pt-28 pb-16 sm:px-6 sm:pt-32">
       <slot />
     </main>
 
-    <footer class="border-ink-200 text-ink-400 border-t">
-      <div class="mx-auto max-w-5xl px-6 py-8 text-sm">
-        © {new Date().getFullYear()} Gael Sho. Hecho con Astro.
-      </div>
+    <footer class="text-ink-500 mx-auto w-full max-w-6xl px-4 pb-10 text-sm sm:px-6">
+      © {new Date().getFullYear()} Gael SHO
     </footer>
   </body>
 </html>
