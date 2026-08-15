@@ -45,4 +45,12 @@ export const proyectos = [
     portada: '/proyectos/placeholder-4.svg',
     portadaAlt: 'Portada pendiente del proyecto cuatro',
   },
+  {
+    slug: 'proyecto-cinco',
+    titulo: 'Proyecto cinco',
+    descripcion: 'Descripción corta del proyecto en una línea',
+    tags: ['Web', 'UX/UI'],
+    portada: '/proyectos/placeholder-5.svg',
+    portadaAlt: 'Portada pendiente del proyecto cinco',
+  },
 ];
