@@ -17,7 +17,11 @@ import { withBase } from '@/lib/url';
     {/* El salto va en el markup y no vía `max-width`: dónde parte una caja de
         ancho fijo depende de la métrica de la fuente, y con Poppins cargando
         tarde el corte bailaba. En móvil el `<br>` se apaga y envuelve solo. */}
-    <p class="text-ink-700 mt-5 max-w-[52ch] text-center text-pretty sm:mt-6 sm:text-lg">
+    {/* El tope en móvil va en % y no en `ch`: en móvil el título ocupa
+        prácticamente todo el ancho disponible, así que un 86% del contenedor
+        deja la descripción siempre más corta que él. En `ch` dependería de la
+        métrica de Poppins y se pasaba de largo. */}
+    <p class="text-ink-700 mt-5 max-w-[86%] text-center text-pretty sm:mt-6 sm:max-w-[52ch] sm:text-lg">
       Helping startups and businesses build everything<br class="hidden sm:inline" /> from identity
       to interface.
     </p>
