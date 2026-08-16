@@ -77,7 +77,7 @@ Si cambia el nombre del repo, se actualiza `base` en `astro.config.mjs` y nada m
 (colores, fuentes) se declaran en el bloque `@theme` de `src/styles/global.css` y Tailwind genera
 las utilidades: `--color-ink-600` habilita `text-ink-600`, `bg-ink-600`, `border-ink-600`.
 
-- Fondo `#222222` y texto `#F4F2EB` (un crema, no blanco puro). Usa los tokens `ink-*` para los
+- Fondo `#191919` y texto `#F4F2EB` (un crema, no blanco puro). Usa los tokens `ink-*` para los
   grises; evita colores arbitrarios tipo `text-[#333]`. En la escala `ink-*` el número **no** es
   "qué tan claro" sino cuánto contrasta con el fondo: `ink-50` apenas se despega del fondo,
   `ink-950` es el color del texto. Escrito así, cambiar el tema es tocar seis valores en `@theme`

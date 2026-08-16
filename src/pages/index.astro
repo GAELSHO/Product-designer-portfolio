@@ -3,18 +3,48 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import TituloRotativo from '@/components/TituloRotativo.astro';
 import TarjetaProyecto from '@/components/TarjetaProyecto.astro';
 import { proyectos } from '@/data/proyectos.js';
+import { withBase } from '@/lib/url';
 
 const [destacado, ...resto] = proyectos;
 ---
 
 <BaseLayout title="Gael SHO | Brand Designer">
-  {/* El título se centra en el alto de la primera pantalla; la card destacada
-      asoma por debajo para que se note que hay más contenido. */}
-  <header class="flex min-h-[52svh] items-center justify-center pb-12 sm:min-h-[58svh] sm:pb-16">
+  {/* El hero ocupa casi toda la primera pantalla; la card destacada asoma por
+      debajo para que se note que hay más contenido. El `svh` (y no `vh`) es
+      para que en móvil cuente el alto real con la barra del navegador. */}
+  <header class="flex min-h-[68svh] flex-col items-center justify-center sm:min-h-[70svh]">
     <TituloRotativo />
+
+    {/* El salto va en el markup y no vía `max-width`: dónde parte una caja de
+        ancho fijo depende de la métrica de la fuente, y con Poppins cargando
+        tarde el corte bailaba. En móvil el `<br>` se apaga y envuelve solo. */}
+    <p class="text-ink-700 mt-5 max-w-[52ch] text-center text-pretty sm:mt-6 sm:text-lg">
+      Helping startups and businesses build everything<br class="hidden sm:inline" /> from identity
+      to interface.
+    </p>
+
+    {/* La flecha es el indicador de scroll, así que además de señalar, lleva. */}
+    <a
+      href={withBase('/#work')}
+      class="text-ink-700 hover:text-ink-950 mt-14 transition-colors sm:mt-20"
+      aria-label="Skip to selected work"
+    >
+      <svg
+        class="size-8 sm:size-10"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m5 9 7 7 7-7" />
+      </svg>
+    </a>
   </header>
 
-  <section id="work" class="scroll-mt-28">
+  <section id="work" class="mt-16 scroll-mt-28 sm:mt-20">
     <h2 class="sr-only">Selected work</h2>
 
     <div class="grid gap-4 sm:gap-6">

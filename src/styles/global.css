@@ -10,16 +10,16 @@
      texto principal. El sitio es negro con texto blanco, así que los valores
      van de casi-negro a blanco; si algún día se invierte el tema, se cambian
      estos seis valores y nada más. */
-  --color-ink-50: #2c2c2b;
-  --color-ink-100: #373735;
-  --color-ink-300: #605f5a;
-  --color-ink-500: #918f88;
-  --color-ink-700: #c5c3ba;
+  --color-ink-50: #232322;
+  --color-ink-100: #2e2e2c;
+  --color-ink-300: #595853;
+  --color-ink-500: #8c8b84;
+  --color-ink-700: #c3c1b8;
   --color-ink-950: #f4f2eb;
 
   /* Alias que espera el dock de unlumen-ui (convención de shadcn):
      habilitan `bg-background`, `text-foreground`, `border-foreground/10`, ... */
-  --color-background: #222222;
+  --color-background: #191919;
   --color-foreground: #f4f2eb;
 }
 
