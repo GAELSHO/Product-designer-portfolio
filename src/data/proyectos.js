@@ -1,6 +1,6 @@
 /**
  * Fuente única de los proyectos del portafolio.
- * El primero se renderiza como card a ancho completo; el resto va al grid de 2 columnas.
+ * Se listan en una sola columna, en este orden, tanto en móvil como en desktop.
  *
  * Ojo: todo lo que se pinta en pantalla va en inglés — el sitio está en inglés,
  * aunque el código y los comentarios estén en español.
@@ -47,13 +47,5 @@ export const proyectos = [
     tags: ['UX/UI', 'Advertising'],
     portada: '/proyectos/placeholder-4.svg',
     portadaAlt: 'Cover pending for project four',
-  },
-  {
-    slug: 'project-five',
-    titulo: 'Project five',
-    descripcion: 'Short one-line description of the project',
-    tags: ['Web', 'UX/UI'],
-    portada: '/proyectos/placeholder-5.svg',
-    portadaAlt: 'Cover pending for project five',
   },
 ];

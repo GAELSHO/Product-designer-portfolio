@@ -43,8 +43,9 @@ public/       Assets servidos tal cual (favicon, portadas, PDFs)
 ```
 
 Para añadir un proyecto basta con un objeto más en `src/data/proyectos.js`: la home y la ruta
-`/work/[slug]` salen de ahí. El primero del array se pinta a ancho completo y el resto en el
-grid de dos columnas.
+`/work/[slug]` salen de ahí. Todas las cards se apilan en una sola columna, en el orden del array,
+también en desktop; la proporción es 4:5 en móvil (para que la card llene pantalla) y 16:9 de `sm:`
+en adelante, donde a ancho completo una 4:5 mediría más de 1300px de alto.
 
 Alias de imports: `@/*` apunta a `src/*` (definido en `tsconfig.json`). Usa `@/layouts/...` en vez
 de rutas relativas con `../../`.

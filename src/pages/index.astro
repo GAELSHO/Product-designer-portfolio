@@ -5,14 +5,13 @@ import TarjetaProyecto from '@/components/TarjetaProyecto.astro';
 import { proyectos } from '@/data/proyectos.js';
 import { withBase } from '@/lib/url';
 
-const [destacado, ...resto] = proyectos;
 ---
 
 <BaseLayout title="Gael SHO | Brand Designer">
   {/* El hero ocupa casi toda la primera pantalla; la card destacada asoma por
       debajo para que se note que hay más contenido. El `svh` (y no `vh`) es
       para que en móvil cuente el alto real con la barra del navegador. */}
-  <header class="flex min-h-[68svh] flex-col items-center justify-center sm:min-h-[70svh]">
+  <header class="flex min-h-[68svh] flex-col items-center justify-center sm:min-h-[64svh]">
     <TituloRotativo />
 
     {/* El salto va en el markup y no vía `max-width`: dónde parte una caja de
@@ -44,20 +43,15 @@ const [destacado, ...resto] = proyectos;
     </a>
   </header>
 
-  <section id="work" class="mt-16 scroll-mt-28 sm:mt-20">
+  <section id="work" class="mt-16 scroll-mt-28">
     <h2 class="sr-only">Selected work</h2>
 
+    {/* Una card debajo de otra, también en desktop. */}
     <div class="grid gap-4 sm:gap-6">
-      {destacado && <TarjetaProyecto proyecto={destacado} destacada />}
-
       {
-        resto.length > 0 && (
-          <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
-            {resto.map((proyecto) => (
-              <TarjetaProyecto proyecto={proyecto} />
-            ))}
-          </div>
-        )
+        proyectos.map((proyecto, i) => (
+          <TarjetaProyecto proyecto={proyecto} prioritaria={i === 0} />
+        ))
       }
     </div>
   </section>

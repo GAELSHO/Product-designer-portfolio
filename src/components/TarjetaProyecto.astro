@@ -10,23 +10,15 @@ interface Props {
     portada: string;
     portadaAlt: string;
   };
-  /** La card destacada ocupa el ancho completo y es más panorámica. */
-  destacada?: boolean;
+  /** La primera card del listado: se carga sin esperar, está sobre el fold. */
+  prioritaria?: boolean;
 }
 
-const { proyecto, destacada = false } = Astro.props;
+const { proyecto, prioritaria = false } = Astro.props;
 
-const proporcion = destacada ? 'aspect-[4/3] sm:aspect-[21/9]' : 'aspect-[4/3] sm:aspect-square';
-
-// La destacada sobresale un poco del grid. El margen negativo se queda por
-// debajo del padding lateral de <main> (-12px contra los 24px de `sm:px-6`),
-// así que siempre asoma sin llegar al borde de la pantalla ni provocar
-// scroll horizontal.
-//
-// Antes esto llevaba además una sombra: sobre el fondo negro no se ve nada
-// (una sombra negra sobre negro no existe), así que el ancho extra es todo
-// lo que distingue a la destacada.
-const sobresale = destacada ? 'sm:-mx-3' : '';
+// Vertical en móvil (4:5, para que la card ocupe pantalla) y panorámica en
+// desktop, donde va a ancho completo y una 4:5 mediría más de 1300px de alto.
+const proporcion = 'aspect-[4/5] sm:aspect-[16/9]';
 
 // El contenido está siempre visible por defecto (móvil y táctil). Solo en
 // dispositivos con puntero fino se esconde y aparece en hover.
@@ -36,12 +28,12 @@ const revelar =
 
 <a
   href={withBase(`/work/${proyecto.slug}`)}
-  class={`group relative block overflow-hidden rounded-3xl sm:rounded-[2rem] ${proporcion} ${sobresale}`}
+  class={`group relative block overflow-hidden rounded-3xl sm:rounded-[2rem] ${proporcion}`}
 >
   <img
     src={withBase(proyecto.portada)}
     alt={proyecto.portadaAlt}
-    loading={destacada ? 'eager' : 'lazy'}
+    loading={prioritaria ? 'eager' : 'lazy'}
     decoding="async"
     class="h-full w-full object-cover transition-transform duration-500 ease-out hover-device:group-focus-visible:scale-105 hover-device:group-hover:scale-105"
   />
