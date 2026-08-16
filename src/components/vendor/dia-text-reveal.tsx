@@ -182,7 +182,13 @@ export function DiaTextReveal({
   useEffect(() => {
     const el = spanRef.current
     if (!el || !isMulti) return
-    setMeasuredWidths(measureWidths(el, texts))
+    const medir = () => setMeasuredWidths(measureWidths(el, texts))
+    medir()
+    // AÑADIDO (no viene del original): el ancho de cada palabra depende de la
+    // tipografía. Si la webfont todavía no ha cargado, la medida sale con la
+    // fuente de sistema y las palabras acaban recortadas (hay overflow:hidden).
+    // Volver a medir cuando las fuentes están listas corrige eso.
+    document.fonts?.ready.then(medir)
   }, [Array.isArray(text) ? text.join("\0") : text])
 
   playRef.current = () => {

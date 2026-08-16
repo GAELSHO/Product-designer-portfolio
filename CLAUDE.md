@@ -160,8 +160,18 @@ de ese componente, ya resueltas, que conviene conocer antes de tocarlo:
   `--foreground`. Por eso `global.css` declara los dos alias en `:root`; si los borras, el texto
   termina el barrido en un color inválido y se queda transparente.
 
-`fixedWidth` reserva el ancho de la palabra más larga para que el titular no se re-centre en cada
-cambio. La cadencia son `duration` + `repeatDelay` (1.5s + 1s = una palabra cada 2.5s).
+**No uses `fixedWidth` aquí.** Reserva el ancho de la palabra más larga, así que las cortas quedan
+centradas dentro de esa caja con aire sobrando a los lados: "WEB Designer" se separaba mucho más
+que "UX/UI Designer". Sin esa prop el ancho sigue a cada palabra y la distancia con "Designer" es
+la misma siempre (el hueco lo pone el `gap-x` del contenedor); a cambio la línea se re-centra, pero
+el componente lo anima en 0.4s.
+
+Eso hace que el ancho lo mida JS, y las medidas dependen de la tipografía: si se miden antes de que
+cargue Poppins salen con la fuente de sistema y las palabras se recortan (hay `overflow: hidden`).
+Por eso el componente lleva un re-medido en `document.fonts.ready` — es otra modificación respecto
+al original.
+
+La cadencia son `duration` + `repeatDelay` (1.5s + 1s = una palabra cada 2.5s).
 
 `prefers-reduced-motion` lo respeta el propio componente: deja el texto sólido y no rota.
 
