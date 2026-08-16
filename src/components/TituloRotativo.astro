@@ -20,16 +20,24 @@ const palabras = ['Brand', 'WEB', 'UX/UI'];
 const textoPlano = `Gael SHO | ${palabras.join(', ')} Designer`;
 ---
 
-<h1 class="text-center text-4xl font-light tracking-tight text-balance sm:text-6xl lg:text-7xl">
+{/*
+  Tamaño fluido en vez de saltos por breakpoint: la línea más larga
+  ("Gael SHO | Brand Designer") tiene que caber entera a cualquier ancho, y con
+  `text-4xl` fijo en móvil se partía en dos. El `6.2vw` es el valor con el que
+  entra en una sola línea desde 320px; el `clamp` lo frena en 72px hacia arriba.
+*/}
+<h1
+  class="text-center text-[clamp(1.25rem,6.2vw,4.5rem)] font-light tracking-tight text-balance"
+>
   <span class="sr-only">{textoPlano}</span>
 
   <span
     aria-hidden="true"
     class="inline-flex flex-wrap items-baseline justify-center gap-x-[0.28em] gap-y-1"
   >
-    <span class="font-bold">Gael SHO |</span>
+    <span class="font-semibold">Gael SHO |</span>
     <TituloSweep client:load />
-    <span>Designer</span>
+    <span class="font-light">Designer</span>
   </span>
 </h1>
 

@@ -77,14 +77,19 @@ Si cambia el nombre del repo, se actualiza `base` en `astro.config.mjs` y nada m
 (colores, fuentes) se declaran en el bloque `@theme` de `src/styles/global.css` y Tailwind genera
 las utilidades: `--color-ink-600` habilita `text-ink-600`, `bg-ink-600`, `border-ink-600`.
 
-- Fondo negro y texto blanco. Usa los tokens `ink-*` para los grises; evita colores arbitrarios
-  tipo `text-[#333]`. En la escala `ink-*` el número **no** es "qué tan claro" sino cuánto
-  contrasta con el fondo: `ink-50` apenas se despega del negro, `ink-950` es el blanco del texto.
-  Escrito así, invertir el tema es cambiar seis valores en `@theme` y nada más.
+- Fondo `#222222` y texto `#F4F2EB` (un crema, no blanco puro). Usa los tokens `ink-*` para los
+  grises; evita colores arbitrarios tipo `text-[#333]`. En la escala `ink-*` el número **no** es
+  "qué tan claro" sino cuánto contrasta con el fondo: `ink-50` apenas se despega del fondo,
+  `ink-950` es el color del texto. Escrito así, cambiar el tema es tocar seis valores en `@theme`
+  y nada más — y por eso `body` usa `bg-background`, no `bg-black`.
 - Cuidado con las sombras: sobre fondo negro no se ven. Para separar algo del fondo se usa
   geometría (tamaño, espaciado) o un borde claro, no `shadow-*`.
 - Tipografía: **solo Poppins** (se carga desde Google Fonts en `BaseLayout`). Los pesos en uso son
-  300 / 400 / 600 / 700; si necesitas otro, añádelo a la URL de la fuente o no cargará.
+  300 / 400 / 500 / 600; si necesitas otro, añádelo a la URL de la fuente o no cargará —
+  `font-medium` estuvo un tiempo pidiendo un 500 que no se descargaba y el navegador lo sustituía
+  por su cuenta. El título va en 600 (`Gael SHO |`) y 300 (el resto).
+- El `<h1>` usa `text-[clamp(...)]` en vez de saltos por breakpoint: tiene que caber en una línea
+  desde 320px, y con un `text-4xl` fijo se partía en dos en móvil.
 - Utilidades en el markup. `@apply` solo en `global.css` para estilos base (`body`, `:focus-visible`).
 - Mobile-first: escribe el caso móvil y añade `sm:` / `lg:` hacia arriba.
 

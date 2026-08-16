@@ -30,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
 
@@ -40,7 +40,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body class="flex min-h-dvh flex-col bg-black">
+  <body class="bg-background flex min-h-dvh flex-col">
     <Dock />
 
     <main class="mx-auto w-full max-w-6xl flex-1 px-4 pt-28 pb-16 sm:px-6 sm:pt-32">

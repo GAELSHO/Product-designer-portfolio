@@ -10,17 +10,17 @@
      texto principal. El sitio es negro con texto blanco, así que los valores
      van de casi-negro a blanco; si algún día se invierte el tema, se cambian
      estos seis valores y nada más. */
-  --color-ink-50: #131316;
-  --color-ink-100: #1d1d21;
-  --color-ink-300: #4a4a51;
-  --color-ink-500: #8b8b93;
-  --color-ink-700: #c6c6cb;
-  --color-ink-950: #ffffff;
+  --color-ink-50: #2c2c2b;
+  --color-ink-100: #373735;
+  --color-ink-300: #605f5a;
+  --color-ink-500: #918f88;
+  --color-ink-700: #c5c3ba;
+  --color-ink-950: #f4f2eb;
 
   /* Alias que espera el dock de unlumen-ui (convención de shadcn):
      habilitan `bg-background`, `text-foreground`, `border-foreground/10`, ... */
-  --color-background: #000000;
-  --color-foreground: #ffffff;
+  --color-background: #222222;
+  --color-foreground: #f4f2eb;
 }
 
 /* Distingue dispositivos con puntero fino (ratón) de los táctiles.
@@ -47,7 +47,7 @@
   }
 
   body {
-    @apply text-ink-950 font-sans bg-black antialiased;
+    @apply text-ink-950 font-sans bg-background antialiased;
   }
 
   :focus-visible {
