@@ -1,21 +1,17 @@
 ---
 import { withBase } from '@/lib/url';
 
+import type { CollectionEntry } from 'astro:content';
+
 interface Props {
-  proyecto: {
-    slug: string;
-    titulo: string;
-    descripcion: string;
-    tags: string[];
-    portada: string;
-    portadaMovil?: string;
-    portadaAlt: string;
-  };
+  /** Id de la entrada en la colección, que es el segmento de URL. */
+  slug: string;
+  datos: CollectionEntry<'work'>['data'];
   /** La primera card del listado: se carga sin esperar, está sobre el fold. */
   prioritaria?: boolean;
 }
 
-const { proyecto, prioritaria = false } = Astro.props;
+const { slug, datos: proyecto, prioritaria = false } = Astro.props;
 
 // Vertical en móvil (4:5, para que la card ocupe pantalla) y panorámica en
 // desktop, donde va a ancho completo y una 4:5 mediría más de 1300px de alto.
@@ -28,7 +24,7 @@ const revelar =
 ---
 
 <a
-  href={withBase(`/work/${proyecto.slug}`)}
+  href={withBase(`/work/${slug}`)}
   class={`group relative block overflow-hidden rounded-3xl sm:rounded-[2rem] ${proporcion}`}
 >
   {/*

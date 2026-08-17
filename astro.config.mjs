@@ -11,6 +11,13 @@ export default defineConfig({
   trailingSlash: 'ignore',
   // React solo para las islas .tsx (el dock). El resto del sitio sigue en .astro.
   integrations: [react()],
+  image: {
+    // Sin esto, una imagen del case study se sirve en un solo tamaño: el móvil
+    // se descargaba el archivo de 2208px para pintarlo a 358px. Con `layout`
+    // Astro genera el `srcset` y cada pantalla baja el ancho que le toca.
+    layout: 'constrained',
+    responsiveStyles: true,
+  },
   build: {
     // Emit `about/index.html` instead of `about.html` so URLs work with or
     // without a trailing slash on GitHub Pages' static file server.

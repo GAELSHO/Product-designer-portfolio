@@ -34,7 +34,8 @@ src/
   components/ Componentes reutilizables (.astro; .tsx solo para islas)
     unlumen-ui/ Dock de unlumen.com — código vendorizado
     vendor/     Otros componentes de terceros pegados tal cual (DiaTextReveal)
-  data/       proyectos.js: fuente única de los proyectos
+  content/    work/<slug>/: un proyecto = una carpeta (index.md + sus imágenes)
+  content.config.ts  Esquema Zod de la colección `work`
   lib/        Helpers TS (url.ts, utils.ts)
   styles/     global.css: import de Tailwind + tokens @theme
 public/       Assets servidos tal cual (favicon, portadas, PDFs)
@@ -50,7 +51,7 @@ cada dispositivo descarga solo su recorte, nunca los dos.
 
 Convención de archivos en `public/proyectos/`:
 
-| Archivo | Recorte | Tamaño | Campo en `proyectos.js` |
+| Archivo | Recorte | Tamaño | Campo en el frontmatter |
 | ------- | ------- | ------ | ----------------------- |
 | `<slug>.webp`       | 16:9 (desktop) | ~2208×1242 | `portada` |
 | `<slug>-movil.webp` | 4:5 (móvil)    | ~1200×1500 | `portadaMovil` |
@@ -63,10 +64,15 @@ archivo tal cual, sin optimizar, porque vive en `public/`.
 Si cambias las proporciones en `proporcion` (dentro de `TarjetaProyecto.astro`), la media query
 `40rem` tiene que moverse con ellas — es el `sm:` de Tailwind.
 
-Para añadir un proyecto basta con un objeto más en `src/data/proyectos.js`: la home y la ruta
-`/work/[slug]` salen de ahí. Todas las cards se apilan en una sola columna, en el orden del array,
-también en desktop; la proporción es 4:5 en móvil (para que la card llene pantalla) y 16:9 de `sm:`
-en adelante, donde a ancho completo una 4:5 mediría más de 1300px de alto.
+**Un proyecto es una carpeta.** `src/content/work/<slug>/` con un `index.md` dentro y sus imágenes
+al lado. El nombre de la carpeta es el slug de la URL (`/work/ampia`). El frontmatter es la ficha
+—lo que pinta la card de la home— y el cuerpo del markdown es el case study; el esquema está en
+`src/content.config.ts` y el build falla si falta un campo. Añadir un proyecto es copiar la carpeta
+de `ampia/`, cambiar el `.md` y sustituir las imágenes: no hay que registrarlo en ningún índice.
+
+`orden` decide la posición en la home. Todas las cards se apilan en una sola columna, también en
+desktop; la proporción es 4:5 en móvil (para que la card llene pantalla) y 16:9 de `sm:` en
+adelante, donde a ancho completo una 4:5 mediría más de 1300px de alto.
 
 Alias de imports: `@/*` apunta a `src/*` (definido en `tsconfig.json`). Usa `@/layouts/...` en vez
 de rutas relativas con `../../`.
@@ -202,8 +208,29 @@ La cadencia son `duration` + `repeatDelay` (1.5s + 1s = una palabra cada 2.5s).
 
 `prefers-reduced-motion` lo respeta el propio componente: deja el texto sólido y no rota.
 
-**Contenido.** Los case studies largos van como colecciones de contenido (`src/content/`) con
-schema en Zod, no como `.astro` sueltos con el texto incrustado.
+**Imágenes: `public/` vs `src/`, y por qué importa.** Las dos portadas de la card viven en
+`public/proyectos/` y se sirven tal cual, sin tocar. **Las imágenes del case study van dentro de
+`src/content/work/<slug>/`**, referenciadas en relativo desde el `.md` (`![alt](./01-charger.webp)`).
+Ahí Astro sí las procesa: genera los anchos del `srcset`, comprime y les pone hash de caché. La
+diferencia se mide — en AMPIA el móvil descarga 225KB en vez de 477KB. Además, si escribes mal una
+ruta el build falla, en vez de dejar un 404 silencioso como haría `public/`.
+
+Eso depende de `image.layout: 'constrained'` en `astro.config.mjs`. Sin esa línea Astro emite un
+solo tamaño por imagen y el teléfono se baja el archivo de 2208px para pintarlo a 358px.
+
+Exporta a **2208px de ancho** (el ancho real de la columna en desktop, ×2 por retina) y en WebP.
+La regla general: el archivo tiene que medir el doble del ancho en que se va a ver; Astro reduce,
+pero nunca amplía.
+
+**El texto del case study va como texto, no dentro de las imágenes.** Un board con el copy
+incrustado se reduce con la imagen y en un teléfono queda ilegible; en markdown se reordena solo y
+se lee igual a cualquier ancho, además de que Google lo indexa y un lector de pantalla lo lee. Las
+imágenes llevan lo visual (renders, mockups, specimens, swatches); el `.md` lleva las palabras.
+
+Los estilos del cuerpo están en el `<style>` de `src/pages/work/[slug].astro`, no en el markdown:
+el `.md` solo debería tener contenido. La columna de lectura se queda en `62ch` aunque las imágenes
+vayan a ancho completo, y las imágenes llevan `max-height: 85svh` para que una pieza vertical no
+mida más que la pantalla.
 
 **Accesibilidad y SEO.** Cada página se renderiza con `BaseLayout` y pasa `title` (y `description`
 cuando aporta algo distinto al genérico). Un solo `<h1>` por página, jerarquía de headings sin

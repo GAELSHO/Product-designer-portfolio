@@ -2,8 +2,10 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import TituloRotativo from '@/components/TituloRotativo.astro';
 import TarjetaProyecto from '@/components/TarjetaProyecto.astro';
-import { proyectos } from '@/data/proyectos.js';
+import { getCollection } from 'astro:content';
 import { withBase } from '@/lib/url';
+
+const proyectos = (await getCollection('work')).sort((a, b) => a.data.orden - b.data.orden);
 
 ---
 
@@ -64,7 +66,7 @@ import { withBase } from '@/lib/url';
     <div class="grid gap-4 sm:gap-6">
       {
         proyectos.map((proyecto, i) => (
-          <TarjetaProyecto proyecto={proyecto} prioritaria={i === 0} />
+          <TarjetaProyecto slug={proyecto.id} datos={proyecto.data} prioritaria={i === 0} />
         ))
       }
     </div>
