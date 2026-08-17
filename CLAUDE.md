@@ -227,26 +227,34 @@ pero nunca amplía.
 con dos. Por eso los `.md` de proyecto son en realidad `.mdx` — es lo único que necesita MDX aquí.
 
 ```mdx
-import charger from './01-charger.webp';
-import chargerMovil from './01-charger-movil.webp';
+import b01 from './01-movil.webp';
 
-<Board desktop={charger} movil={chargerMovil} alt="…" />
+<Board movil={b01} alt="…" />
 ```
 
-`movil` es opcional. Sin él la pieza de desktop se usa en todos los tamaños, que es lo correcto
-para renders y mockups: solo se ven más pequeños. Hace falta cuando el board lleva **texto
-compuesto dentro**, porque ese sí se vuelve ilegible al reducirse a un tercio. Verificado que cada
-pantalla descarga solo su recorte, nunca los dos.
+Las dos props son opcionales, pero hace falta al menos una:
 
-**El texto del case study va como texto, no dentro de las imágenes.** Un board con el copy
-incrustado se reduce con la imagen y en un teléfono queda ilegible; en markdown se reordena solo y
-se lee igual a cualquier ancho, además de que Google lo indexa y un lector de pantalla lo lee. Las
-imágenes llevan lo visual (renders, mockups, specimens, swatches); el `.md` lleva las palabras.
+| Props | Cuándo | Qué hace |
+| ----- | ------ | -------- |
+| `desktop` sola | Renders y mockups sin texto dentro | Una sola fuente a todos los tamaños; al reducirse solo se ve más pequeña |
+| las dos | Boards con texto compuesto | `<picture>`: cada pantalla descarga **solo su recorte**, nunca los dos |
+| `movil` sola | Board compuesto a proporción de teléfono | En desktop se limita a `32rem` centrado, o mediría más de 1800px de alto |
+
+**Los boards van a sangre y pegados entre sí**: son composiciones continuas, así que no llevan
+margen, ni radio, ni hueco entre ellos. El ancho completo se consigue con
+`margin-inline: calc(50% - 50vw)`, que los saca del padding lateral de `<main>`.
+
+**El `alt` de un board no es decorativo.** Estos boards llevan el texto dentro, así que el `alt` es
+lo único que pueden leer Google y un lector de pantalla: escríbelo con el copy real de la pieza, no
+con "board de tipografías". Si cambias el texto de un board, cambia también su `alt`.
+
+**Si un board se ve borroso o su texto no se lee, la salida es sacar ese texto de la imagen** y
+escribirlo en el `.mdx` como texto normal: se reordena solo, se lee igual a cualquier ancho, se
+puede seleccionar y Google lo indexa. Los estilos de párrafos y encabezados ya están puestos por si
+hace falta; la columna de lectura se queda en `62ch` aunque los boards vayan a ancho completo.
 
 Los estilos del cuerpo están en el `<style>` de `src/pages/work/[slug].astro`, no en el markdown:
-el `.md` solo debería tener contenido. La columna de lectura se queda en `62ch` aunque las imágenes
-vayan a ancho completo, y las imágenes llevan `max-height: 85svh` para que una pieza vertical no
-mida más que la pantalla.
+el `.mdx` solo debería tener contenido.
 
 **Accesibilidad y SEO.** Cada página se renderiza con `BaseLayout` y pasa `title` (y `description`
 cuando aporta algo distinto al genérico). Un solo `<h1>` por página, jerarquía de headings sin

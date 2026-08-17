@@ -3,27 +3,37 @@ import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 /**
- * Una pieza del case study, con recorte propio para móvil.
+ * Una pieza del case study.
  *
  * Existe porque el markdown no puede expresar dos fuentes: un
  * `![alt](./x.webp)` apunta a un archivo y punto. Aquí se emite un `<picture>`
  * y cada pantalla descarga solo su recorte, nunca los dos.
  *
- * `movil` es opcional: sin él la pieza de desktop se usa en todos los tamaños,
- * que es lo correcto para renders y mockups —solo se ven más pequeños—. Hace
- * falta cuando la pieza lleva texto compuesto, porque ese sí se vuelve
- * ilegible al reducirse.
+ * Las dos props son opcionales pero hace falta al menos una:
+ * - `desktop` sola: correcto para renders y mockups, que al reducirse solo se
+ *   ven más pequeños.
+ * - las dos: para boards con texto compuesto dentro, que sí se vuelven
+ *   ilegibles al reducirse a un tercio.
+ * - `movil` sola: el board está compuesto a proporción de teléfono. En desktop
+ *   se limita el ancho (`pieza-movil`) para que no mida 1800px de alto.
  */
 interface Props {
-  desktop: ImageMetadata;
+  desktop?: ImageMetadata;
   movil?: ImageMetadata;
   alt: string;
 }
 
 const { desktop, movil, alt } = Astro.props;
 
-// El board ocupa el ancho del contenedor (1104px) y por debajo el del viewport.
-const sizes = '(min-width: 72rem) 1104px, 100vw';
+if (!desktop && !movil) {
+  throw new Error(`<Board> necesita "desktop" o "movil". Pieza: ${alt}`);
+}
+
+// Un board compuesto para teléfono no se estira a ancho completo en desktop.
+const soloMovil = !desktop;
+const sizes = soloMovil
+  ? '(min-width: 40rem) 32rem, 100vw'
+  : '(min-width: 72rem) 1104px, 100vw';
 const anchos = [640, 750, 828, 1080, 1280, 1668, 2048];
 
 const pedir = (src: ImageMetadata) =>
@@ -34,28 +44,31 @@ const pedir = (src: ImageMetadata) =>
     format: 'webp',
   });
 
-const imgDesktop = await pedir(desktop);
+const imgDesktop = desktop ? await pedir(desktop) : undefined;
 const imgMovil = movil ? await pedir(movil) : undefined;
+// La que manda por defecto; el `<source>` solo entra si hay pareja.
+const base = imgMovil ?? imgDesktop!;
+const meta = movil ?? desktop!;
 ---
 
-<picture>
+<picture class={soloMovil ? 'pieza pieza-movil' : 'pieza'}>
   {
-    imgMovil && (
+    imgDesktop && imgMovil && (
       <source
         media="(min-width: 40rem)"
         srcset={imgDesktop.srcSet.attribute}
         sizes={sizes}
-        width={desktop.width}
-        height={desktop.height}
+        width={desktop!.width}
+        height={desktop!.height}
       />
     )
   }
   <img
-    src={imgMovil ? imgMovil.src : imgDesktop.src}
-    srcset={imgMovil ? imgMovil.srcSet.attribute : imgDesktop.srcSet.attribute}
+    src={base.src}
+    srcset={base.srcSet.attribute}
     sizes={sizes}
-    width={imgMovil ? movil!.width : desktop.width}
-    height={imgMovil ? movil!.height : desktop.height}
+    width={meta.width}
+    height={meta.height}
     alt={alt}
     loading="lazy"
     decoding="async"

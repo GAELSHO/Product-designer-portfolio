@@ -11,68 +11,76 @@ anio: '2025'
 ---
 
 import Board from '@/components/Board.astro';
-import charger from './01-charger.webp';
-import billboard from './02-billboard.webp';
-import appIcon from './03-app-icon.webp';
+import b01 from './01-movil.webp';
+import b02 from './02-movil.webp';
+import b03 from './03-movil.webp';
+import b04 from './04-movil.webp';
+import b05 from './05-movil.webp';
+import b06 from './06-movil.webp';
+import b07 from './07-movil.webp';
+import b08 from './08-movil.webp';
+import b09 from './09-movil.webp';
+import b10 from './10-movil.webp';
+import b11 from './11-movil.webp';
 
 {/*
-  Cada pieza va con <Board>. Para darle recorte propio en móvil, exporta el
-  archivo `-movil` al lado, impórtalo y pásalo como `movil={...}`:
+  Los boards están compuestos a proporción de teléfono, así que van como
+  `movil`. Cuando exportes la versión de desktop de una pieza, impórtala y
+  añádela al lado:
 
-            <Board desktop={charger} movil={chargerMovil} alt="…" />
+      import b01d from './01.webp';
+      <Board movil={b01} desktop={b01d} alt="…" />
 
-  Sin `movil` la misma pieza se usa en todos los tamaños, que es lo correcto
-  mientras el board no lleve texto compuesto dentro.
+  El `alt` no es decorativo: estos boards llevan el texto dentro, y es lo único
+  que pueden leer Google y un lector de pantalla. Si cambias el copy de un
+  board, cambia también su `alt`.
 */}
 
-## The challenge
-
-{/* Sustituye este texto por el tuyo. Va como texto, no como imagen: en el
-    móvil se reordena solo y siempre se lee al mismo tamaño. */}
-
-Charging an electric car in a public lot is a decision made in seconds, standing
-up, often at night. The network needed an identity that reads from across a
-parking lot and an interface that answers three questions fast: is it free, how
-long will it take, and what will it cost.
-
-## Identity
-
-The mark is a single continuous stroke — a road that rises into a peak and comes
-back down. It scales from an app icon to a two-metre column without losing its
-shape, and the gradient carries the energy of the brand without needing a
-photograph behind it.
-
 <Board
-  desktop={charger}
-  alt='AMPIA charging column installed under a solar canopy, its screen showing the brand mark and the tagline "Powering the future"'
+  movil={b01}
+  alt="AMPIA charging column under a solar canopy in a parking lot, its screen showing the brand mark and the line 'Powering the future'"
 />
 
-The column is the primary surface. Everything else in the system is built so
-that a person who has seen the column recognises the brand anywhere else.
-
-## Campaign
-
-Out of home had to work at 80 km/h. Copy carries the whole idea, the mark closes
-it, and the visual does the rest.
-
 <Board
-  desktop={billboard}
-  alt='Billboard reading "Tu recibo se pondrá a dieta" with a utility bill wrapped in a measuring tape'
+  movil={b02}
+  alt="Branding and UX design for AMPIA, a network of EV charging stations across Mexico, and a sub-brand of the energy company EVCON. Below, an iPhone home screen with the AMPIA app icon"
 />
 
-## Product
-
-The app is the part people touch daily. The icon reuses the same stroke, so the
-brand is recognisable in a home screen full of competing colour.
+<Board movil={b03} alt="The AMPIA wordmark in white over a blue and green gradient" />
 
 <Board
-  desktop={appIcon}
-  alt="Close-up of an iPhone home screen showing the AMPIA app icon among system apps"
+  movil={b04}
+  alt="Inspired by the curves of the charging cables and the charging cycle: continuous lines that flow and close, like energy itself. Beside the text, a charging unit carrying the mark"
 />
 
-## Outcome
+<Board
+  movil={b05}
+  alt="Construction of the AMPIA monogram: the rounded A built from continuous strokes over its geometric guides"
+/>
 
-{/* Aquí van tus resultados reales: adopción, tiempos, lo que midieras.
-    Si no hay números, cuenta qué cambió en la experiencia y por qué. */}
+<Board
+  movil={b06}
+  alt="Colour palette: #75F26B green, #66ACD9 light blue, #0268E4 blue, #143980 deep blue and #0E1A28 near-black"
+/>
 
-Escribe aquí el cierre del proyecto.
+<Board
+  movil={b07}
+  alt="Type system. Space Grotesk for display, headlines and advertising, shown on a gradient panel reading 'Powering the future'. Inter for app UI, data and instructions, shown in a charging screen at 42 per cent, 7.4 kW, 01:12 h remaining, $4.93"
+/>
+
+<Board
+  movil={b08}
+  alt="Signage on a concrete building facade: a wide gradient panel reading 'Powering the future' with the AMPIA mark"
+/>
+
+<Board
+  movil={b09}
+  alt="The AMPIA app icon, the monogram in white over a blue and green gradient, and the same icon in place on an iPhone home screen"
+/>
+
+<Board
+  movil={b10}
+  alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent. Below, a billboard in Colima, Mexico reading 'Tu recibo se pondrá a dieta'"
+/>
+
+<Board movil={b11} alt="Currently working on the UX/UI design" />

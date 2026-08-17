@@ -123,24 +123,66 @@ const ficha = [
     max-width: none;
   }
 
-  .cuerpo :global(img) {
-    width: 100%;
-    height: auto;
-    border-radius: 1rem;
-    margin-block: 3rem;
-    /* Tope de alto: una pieza vertical a ancho completo mediría más que la
-       pantalla. Con esto se queda centrada y más estrecha, sin recortarse. */
-    max-height: 85svh;
-    width: auto;
-    max-width: 100%;
-    margin-inline: auto;
+  /*
+    Los boards van pegados: son composiciones continuas, así que cualquier
+    hueco entre ellos rompe la lectura. Sin margen, sin radio y sin sombra.
+  */
+  .cuerpo :global(.pieza) {
     display: block;
+    margin-block: 0;
   }
 
+  .cuerpo :global(.pieza img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /*
+    A sangre: se sale del padding lateral de <main> hasta tocar los dos bordes
+    de la pantalla. El `max-width` evita que el ancho del scrollbar provoque
+    scroll horizontal en los navegadores que lo pintan por encima del layout.
+  */
+  .cuerpo :global(.pieza) {
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+
+  /*
+    En desktop, un board compuesto a proporción de teléfono no se estira: a
+    ancho completo mediría más de 1800px de alto. Se queda en una columna
+    centrada del ancho de un móvil, y ahí sí lleva radio porque ya no toca los
+    bordes de la pantalla.
+  */
   @media (min-width: 40rem) {
-    .cuerpo :global(img) {
-      border-radius: 1.5rem;
-      margin-block: 5rem;
+    .cuerpo :global(.pieza-movil) {
+      width: 100%;
+      max-width: 32rem;
+      margin-inline: auto;
     }
+
+    .cuerpo :global(.pieza-movil:first-child img) {
+      border-start-start-radius: 1.5rem;
+      border-start-end-radius: 1.5rem;
+    }
+
+    .cuerpo :global(.pieza-movil:last-child img) {
+      border-end-start-radius: 1.5rem;
+      border-end-end-radius: 1.5rem;
+    }
+  }
+
+  /* Imágenes sueltas del markdown (no boards), por si vuelve a haber texto
+     con ilustraciones intercaladas. */
+  .cuerpo :global(p > img) {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 85svh;
+    height: auto;
+    margin-inline: auto;
+    margin-block: 3rem;
+    border-radius: 1rem;
   }
 </style>
