@@ -10,10 +10,25 @@ rol: Brand & product design
 anio: '2025'
 ---
 
+import Board from '@/components/Board.astro';
+import charger from './01-charger.webp';
+import billboard from './02-billboard.webp';
+import appIcon from './03-app-icon.webp';
+
+{/*
+  Cada pieza va con <Board>. Para darle recorte propio en móvil, exporta el
+  archivo `-movil` al lado, impórtalo y pásalo como `movil={...}`:
+
+            <Board desktop={charger} movil={chargerMovil} alt="…" />
+
+  Sin `movil` la misma pieza se usa en todos los tamaños, que es lo correcto
+  mientras el board no lleve texto compuesto dentro.
+*/}
+
 ## The challenge
 
-<!-- Sustituye este texto por el tuyo. Va como texto, no como imagen: en el
-     móvil se reordena solo y siempre se lee al mismo tamaño. -->
+{/* Sustituye este texto por el tuyo. Va como texto, no como imagen: en el
+    móvil se reordena solo y siempre se lee al mismo tamaño. */}
 
 Charging an electric car in a public lot is a decision made in seconds, standing
 up, often at night. The network needed an identity that reads from across a
@@ -27,7 +42,10 @@ back down. It scales from an app icon to a two-metre column without losing its
 shape, and the gradient carries the energy of the brand without needing a
 photograph behind it.
 
-![AMPIA charging column installed under a solar canopy, its screen showing the brand mark and the tagline "Powering the future"](./01-charger.webp)
+<Board
+  desktop={charger}
+  alt='AMPIA charging column installed under a solar canopy, its screen showing the brand mark and the tagline "Powering the future"'
+/>
 
 The column is the primary surface. Everything else in the system is built so
 that a person who has seen the column recognises the brand anywhere else.
@@ -37,18 +55,24 @@ that a person who has seen the column recognises the brand anywhere else.
 Out of home had to work at 80 km/h. Copy carries the whole idea, the mark closes
 it, and the visual does the rest.
 
-![Billboard reading "Tu recibo se pondrá a dieta" with a utility bill wrapped in a measuring tape](./02-billboard.webp)
+<Board
+  desktop={billboard}
+  alt='Billboard reading "Tu recibo se pondrá a dieta" with a utility bill wrapped in a measuring tape'
+/>
 
 ## Product
 
 The app is the part people touch daily. The icon reuses the same stroke, so the
 brand is recognisable in a home screen full of competing colour.
 
-![Close-up of an iPhone home screen showing the AMPIA app icon among system apps](./03-app-icon.webp)
+<Board
+  desktop={appIcon}
+  alt="Close-up of an iPhone home screen showing the AMPIA app icon among system apps"
+/>
 
 ## Outcome
 
-<!-- Aquí van tus resultados reales: adopción, tiempos, lo que midieras.
-     Si no hay números, cuenta qué cambió en la experiencia y por qué. -->
+{/* Aquí van tus resultados reales: adopción, tiempos, lo que midieras.
+    Si no hay números, cuenta qué cambió en la experiencia y por qué. */}
 
 Escribe aquí el cierre del proyecto.

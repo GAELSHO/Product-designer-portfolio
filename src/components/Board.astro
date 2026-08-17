@@ -1,0 +1,63 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * Una pieza del case study, con recorte propio para móvil.
+ *
+ * Existe porque el markdown no puede expresar dos fuentes: un
+ * `![alt](./x.webp)` apunta a un archivo y punto. Aquí se emite un `<picture>`
+ * y cada pantalla descarga solo su recorte, nunca los dos.
+ *
+ * `movil` es opcional: sin él la pieza de desktop se usa en todos los tamaños,
+ * que es lo correcto para renders y mockups —solo se ven más pequeños—. Hace
+ * falta cuando la pieza lleva texto compuesto, porque ese sí se vuelve
+ * ilegible al reducirse.
+ */
+interface Props {
+  desktop: ImageMetadata;
+  movil?: ImageMetadata;
+  alt: string;
+}
+
+const { desktop, movil, alt } = Astro.props;
+
+// El board ocupa el ancho del contenedor (1104px) y por debajo el del viewport.
+const sizes = '(min-width: 72rem) 1104px, 100vw';
+const anchos = [640, 750, 828, 1080, 1280, 1668, 2048];
+
+const pedir = (src: ImageMetadata) =>
+  getImage({
+    src,
+    // Nunca pedir más ancho que el original: Astro no amplía.
+    widths: [...anchos.filter((w) => w < src.width), src.width],
+    format: 'webp',
+  });
+
+const imgDesktop = await pedir(desktop);
+const imgMovil = movil ? await pedir(movil) : undefined;
+---
+
+<picture>
+  {
+    imgMovil && (
+      <source
+        media="(min-width: 40rem)"
+        srcset={imgDesktop.srcSet.attribute}
+        sizes={sizes}
+        width={desktop.width}
+        height={desktop.height}
+      />
+    )
+  }
+  <img
+    src={imgMovil ? imgMovil.src : imgDesktop.src}
+    srcset={imgMovil ? imgMovil.srcSet.attribute : imgDesktop.srcSet.attribute}
+    sizes={sizes}
+    width={imgMovil ? movil!.width : desktop.width}
+    height={imgMovil ? movil!.height : desktop.height}
+    alt={alt}
+    loading="lazy"
+    decoding="async"
+  />
+</picture>

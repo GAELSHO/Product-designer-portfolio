@@ -222,6 +222,22 @@ Exporta a **2208px de ancho** (el ancho real de la columna en desktop, ×2 por r
 La regla general: el archivo tiene que medir el doble del ancho en que se va a ver; Astro reduce,
 pero nunca amplía.
 
+**Cada pieza del case study va con `<Board>`** (`src/components/Board.astro`), no con un
+`![alt](./x.webp)`: el markdown solo puede apuntar a un archivo y `<Board>` emite un `<picture>`
+con dos. Por eso los `.md` de proyecto son en realidad `.mdx` — es lo único que necesita MDX aquí.
+
+```mdx
+import charger from './01-charger.webp';
+import chargerMovil from './01-charger-movil.webp';
+
+<Board desktop={charger} movil={chargerMovil} alt="…" />
+```
+
+`movil` es opcional. Sin él la pieza de desktop se usa en todos los tamaños, que es lo correcto
+para renders y mockups: solo se ven más pequeños. Hace falta cuando el board lleva **texto
+compuesto dentro**, porque ese sí se vuelve ilegible al reducirse a un tercio. Verificado que cada
+pantalla descarga solo su recorte, nunca los dos.
+
 **El texto del case study va como texto, no dentro de las imágenes.** Un board con el copy
 incrustado se reduce con la imagen y en un teléfono queda ilegible; en markdown se reordena solo y
 se lee igual a cualquier ancho, además de que Google lo indexa y un lector de pantalla lo lee. Las

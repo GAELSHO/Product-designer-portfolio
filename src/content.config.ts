@@ -12,11 +12,11 @@ import { glob } from 'astro/loaders';
  */
 const work = defineCollection({
   loader: glob({
-    pattern: '*/index.md',
+    pattern: '*/index.{md,mdx}',
     base: './src/content/work',
     // El id es el nombre de la carpeta, que es el slug de la URL:
-    // `ampia/index.md` -> `ampia` -> /work/ampia
-    generateId: ({ entry }) => entry.replace(/\/index\.md$/, ''),
+    // `ampia/index.mdx` -> `ampia` -> /work/ampia
+    generateId: ({ entry }) => entry.replace(/\/index\.mdx?$/, ''),
   }),
   schema: z.object({
     titulo: z.string(),
