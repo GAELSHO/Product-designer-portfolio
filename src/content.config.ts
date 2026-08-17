@@ -30,7 +30,7 @@ const work = defineCollection({
     portadaMovil: z.string().optional(),
     portadaAlt: z.string(),
     /** Ficha lateral del case study. */
-    rol: z.string().optional(),
+    cliente: z.string().optional(),
     anio: z.string().optional(),
   }),
 });

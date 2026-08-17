@@ -13,16 +13,20 @@ export async function getStaticPaths() {
 
 const { proyecto } = Astro.props;
 const { Content } = await render(proyecto);
-const { titulo, descripcion, tags, rol, anio } = proyecto.data;
+const { titulo, descripcion, tags, cliente, anio } = proyecto.data;
 
 const ficha = [
-  { etiqueta: 'Role', valor: rol },
+  { etiqueta: 'Client', valor: cliente },
   { etiqueta: 'Year', valor: anio },
-  { etiqueta: 'Disciplines', valor: tags.join(', ') },
 ].filter((f) => f.valor);
+
+// `descripcion` es deliberadamente corta porque es lo que se lee sobre la card
+// de la home, donde las píldoras ya dicen las disciplinas. Para el buscador eso
+// solo son tres palabras, así que aquí se le añaden los tags.
+const descripcionMeta = `${titulo} — ${descripcion}. ${tags.join(', ')}.`;
 ---
 
-<BaseLayout title={`${titulo} — Gael SHO`} description={descripcion}>
+<BaseLayout title={`${titulo} — Gael SHO`} description={descripcionMeta}>
   <article>
     <a class="text-ink-500 hover:text-ink-950 text-sm transition-colors" href={withBase('/#work')}>
       ← Work
@@ -38,7 +42,7 @@ const ficha = [
 
       {/* En móvil la ficha se apila; en desktop va en fila. Es texto, no una
           imagen, así que nunca se reduce: se reordena. */}
-      <dl class="mt-8 grid gap-6 sm:grid-cols-3 sm:gap-8">
+      <dl class="mt-8 flex flex-col gap-6 sm:flex-row sm:gap-16">
         {
           ficha.map((f) => (
             <div>
