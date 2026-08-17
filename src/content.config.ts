@@ -20,7 +20,10 @@ const work = defineCollection({
   }),
   schema: z.object({
     titulo: z.string(),
+    /** Línea corta que se lee sobre la card de la home, junto a las píldoras. */
     descripcion: z.string(),
+    /** Subtítulo del case study. Si falta se usa `descripcion`. */
+    intro: z.string().optional(),
     tags: z.array(z.string()),
     /** Orden en la home; menor sale antes. */
     orden: z.number(),
