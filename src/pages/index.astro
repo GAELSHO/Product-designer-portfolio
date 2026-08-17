@@ -17,11 +17,21 @@ import { withBase } from '@/lib/url';
     {/* El salto va en el markup y no vía `max-width`: dónde parte una caja de
         ancho fijo depende de la métrica de la fuente, y con Poppins cargando
         tarde el corte bailaba. En móvil el `<br>` se apaga y envuelve solo. */}
-    {/* El tope en móvil va en % y no en `ch`: en móvil el título ocupa
-        prácticamente todo el ancho disponible, así que un 86% del contenedor
-        deja la descripción siempre más corta que él. En `ch` dependería de la
-        métrica de Poppins y se pasaba de largo. */}
-    <p class="text-ink-700 mt-5 max-w-[86%] text-center text-pretty sm:mt-6 sm:max-w-[52ch] sm:text-lg">
+    {/* Tamaño fluido, como el `<h1>`: con un tamaño fijo la descripción crecía
+        en proporción al bajar de ancho (en móvil llegaba a 0.67 del título, y
+        en la referencia es ~0.33). El `2.05vw` es 0.33 × el `6.2vw` del título,
+        así que la proporción se mantiene constante mientras ambos escalan.
+        El suelo de 0.875rem es legibilidad: a 390px de ancho el título mide
+        24px y un 0.33 de eso serían 8px, ilegibles. Por eso en móvil la
+        proporción no se puede respetar.
+
+        El tope de ancho en móvil va en % y no en `ch`: ahí el título ocupa casi
+        todo el ancho disponible, así que un 86% del contenedor deja la
+        descripción siempre más corta. En `ch` dependería de la métrica de
+        Poppins y se pasaba de largo. */}
+    <p
+      class="text-ink-700 mt-5 max-w-[86%] text-center text-[clamp(0.875rem,2.05vw,1.5rem)] font-light text-pretty sm:mt-6 sm:max-w-[80ch]"
+    >
       Helping startups and businesses build everything<br class="hidden sm:inline" /> from identity
       to interface.
     </p>
