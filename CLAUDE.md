@@ -38,9 +38,30 @@ src/
   lib/        Helpers TS (url.ts, utils.ts)
   styles/     global.css: import de Tailwind + tokens @theme
 public/       Assets servidos tal cual (favicon, portadas, PDFs)
-  proyectos/  Portadas de las cards. Hoy son SVG placeholder: al sustituirlas
-              por las imágenes reales, actualiza `portada` en data/proyectos.js
+  proyectos/  Portadas de las cards, dos recortes por proyecto (ver abajo).
+              Hoy son SVG placeholder
 ```
+
+**Portadas: dos recortes, no uno escalado.** La card es 4:5 en móvil y 16:9 en desktop, y la
+imagen se pinta con `object-cover`, que recorta para llenar. Con una sola fuente, el breakpoint
+que no coincide se queda viendo el **45% central** de la pieza —da igual cuál de las dos subas—.
+Por eso `TarjetaProyecto.astro` usa `<picture>` con un `<source media="(min-width: 40rem)">`:
+cada dispositivo descarga solo su recorte, nunca los dos.
+
+Convención de archivos en `public/proyectos/`:
+
+| Archivo | Recorte | Tamaño | Campo en `proyectos.js` |
+| ------- | ------- | ------ | ----------------------- |
+| `<slug>.webp`       | 16:9 (desktop) | ~2208×1242 | `portada` |
+| `<slug>-movil.webp` | 4:5 (móvil)    | ~1200×1500 | `portadaMovil` |
+
+`portadaMovil` es opcional: si falta, se usa la de desktop en los dos tamaños (y se pierde ese 55%
+en móvil). Los tamaños salen de multiplicar el ancho real de la card por la densidad de pantalla:
+1104px de card en desktop a 2x, y 398px a 3x en móvil. Exporta en WebP; el `<picture>` sirve el
+archivo tal cual, sin optimizar, porque vive en `public/`.
+
+Si cambias las proporciones en `proporcion` (dentro de `TarjetaProyecto.astro`), la media query
+`40rem` tiene que moverse con ellas — es el `sm:` de Tailwind.
 
 Para añadir un proyecto basta con un objeto más en `src/data/proyectos.js`: la home y la ruta
 `/work/[slug]` salen de ahí. Todas las cards se apilan en una sola columna, en el orden del array,

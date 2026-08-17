@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img">
+  <defs>
+    <linearGradient id="gm3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#23303a" />
+      <stop offset="1" stop-color="#3d5566" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#gm3)" />
+  <g opacity="0.12" stroke="#ffffff" stroke-width="2">
+    <path d="M0 500h1200M0 1000h1200M400 0v1500M800 0v1500" />
+  </g>
+  <text x="600" y="780" fill="#ffffff" fill-opacity="0.5"
+    font-family="Poppins, ui-sans-serif, system-ui, sans-serif" font-size="84"
+    font-weight="300" letter-spacing="14" text-anchor="middle">PROJECT 3</text>
+</svg>

@@ -8,6 +8,7 @@ interface Props {
     descripcion: string;
     tags: string[];
     portada: string;
+    portadaMovil?: string;
     portadaAlt: string;
   };
   /** La primera card del listado: se carga sin esperar, está sobre el fold. */
@@ -30,13 +31,27 @@ const revelar =
   href={withBase(`/work/${proyecto.slug}`)}
   class={`group relative block overflow-hidden rounded-3xl sm:rounded-[2rem] ${proporcion}`}
 >
-  <img
-    src={withBase(proyecto.portada)}
-    alt={proyecto.portadaAlt}
-    loading={prioritaria ? 'eager' : 'lazy'}
-    decoding="async"
-    class="h-full w-full object-cover transition-transform duration-500 ease-out hover-device:group-focus-visible:scale-105 hover-device:group-hover:scale-105"
-  />
+  {/*
+    Dos recortes, no uno escalado: la card es 4:5 en móvil y 16:9 en desktop, y
+    `object-cover` recorta para llenar. Con una sola fuente, el breakpoint que
+    no coincide se queda viendo el 45% central de la pieza.
+
+    El `40rem` es el `sm:` de Tailwind — si cambia la proporción por breakpoint
+    en `proporcion`, esta media query tiene que moverse con ella.
+
+    `portadaMovil` es opcional: sin ella se usa la de desktop en ambos, que es
+    lo que hacen ahora los placeholders sin recorte vertical.
+  */}
+  <picture class="block h-full w-full">
+    {proyecto.portadaMovil && <source media="(min-width: 40rem)" srcset={withBase(proyecto.portada)} />}
+    <img
+      src={withBase(proyecto.portadaMovil ?? proyecto.portada)}
+      alt={proyecto.portadaAlt}
+      loading={prioritaria ? 'eager' : 'lazy'}
+      decoding="async"
+      class="h-full w-full object-cover transition-transform duration-500 ease-out hover-device:group-focus-visible:scale-105 hover-device:group-hover:scale-105"
+    />
+  </picture>
 
   <div
     class={`absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent ${revelar}`}
