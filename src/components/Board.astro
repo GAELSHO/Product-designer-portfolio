@@ -43,6 +43,10 @@ const pedir = (src: ImageMetadata) =>
     // Nunca pedir más ancho que el original: Astro no amplía.
     widths: [...anchos.filter((w) => w < src.width), src.width],
     format: 'webp',
+    // Por encima del default (~80). Estos boards son composiciones con texto y
+    // degradados grandes, que es justo donde WebP se nota: a 80 el mockup de
+    // hormigón pierde grano y los degradados marcan bandas.
+    quality: 88,
   });
 
 const imgDesktop = desktop ? await pedir(desktop) : undefined;
