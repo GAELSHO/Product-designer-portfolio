@@ -12,76 +12,69 @@ anio: '2026'
 ---
 
 import Board from '@/components/Board.astro';
-import b01 from './01-movil.webp';
-import b02 from './02-movil.webp';
-import b03 from './03-movil.webp';
-import b04 from './04-movil.webp';
-import b05 from './05-movil.webp';
-import b06 from './06-movil.webp';
-import b07 from './07-movil.webp';
-import b08 from './08-movil.webp';
-import b09 from './09-movil.webp';
-import b10 from './10-movil.webp';
-import b11 from './11-movil.webp';
+
+import m01 from './01-movil.webp';
+import m02 from './02-movil.webp';
+import m03 from './03-movil.webp';
+import m04 from './04-movil.webp';
+import m05 from './05-movil.webp';
+import m06 from './06-movil.webp';
+import m07 from './07-movil.webp';
+import m08 from './08-movil.webp';
+import m09 from './09-movil.webp';
+import m10 from './10-movil.webp';
+import m11 from './11-movil.webp';
+
+import d01 from './01-desktop.webp';
+import d02 from './02-desktop.webp';
+import d03 from './03-desktop.webp';
+import d04 from './04-desktop.webp';
+import d05 from './05-desktop.webp';
+import d06 from './06-desktop.webp';
+import d07 from './07-desktop.webp';
+import d08 from './08-desktop.webp';
+import d09 from './09-desktop.webp';
+import d10 from './10-desktop.webp';
+import d11 from './11-desktop.webp';
 
 {/*
-  Los boards están compuestos a proporción de teléfono, así que van como
-  `movil`. Cuando exportes la versión de desktop de una pieza, impórtala y
-  añádela al lado:
+  Dos secuencias completas, no una con dos recortes: las versiones no van 1:1.
+  En móvil la tipografía es un solo board alto con Space Grotesk e Inter juntos;
+  en desktop son dos boards separados con la señalética en medio. Y el board
+  "Currently working on the UX/UI design" solo existe en móvil.
 
-      import b01d from './01.webp';
-      <Board movil={b01} desktop={b01d} alt="…" />
+  Solo se descarga la secuencia que se ve — la otra está en `display:none` y sus
+  imágenes son `loading="lazy"`, así que nunca entran en viewport. Está medido.
 
   El `alt` no es decorativo: estos boards llevan el texto dentro, y es lo único
   que pueden leer Google y un lector de pantalla. Si cambias el copy de un
   board, cambia también su `alt`.
 */}
 
-<Board
-  movil={b01}
-  alt="AMPIA charging column under a solar canopy in a parking lot, its screen showing the brand mark and the line 'Powering the future'"
-/>
+<div class="secuencia secuencia-movil">
+  <Board movil={m01} alt="AMPIA charging column under a solar canopy in a parking lot, its screen showing the brand mark and the line 'Powering the future'" />
+  <Board movil={m02} alt="Branding and UX design for AMPIA, a network of EV charging stations across Mexico, and a sub-brand of the energy company EVCON. Below, an iPhone home screen with the AMPIA app icon" />
+  <Board movil={m03} alt="The AMPIA wordmark in white over a blue and green gradient" />
+  <Board movil={m04} alt="Inspired by the curves of the charging cables and the charging cycle: continuous lines that flow and close, like energy itself. Beside the text, a charging unit carrying the mark" />
+  <Board movil={m05} alt="Construction of the AMPIA monogram: the rounded A built from continuous strokes over its geometric guides" />
+  <Board movil={m06} alt="Colour palette: #75F26B green, #66ACD9 light blue, #0268E4 blue, #143980 deep blue and #0E1A28 near-black" />
+  <Board movil={m07} alt="Type system. Space Grotesk for display, headlines and advertising, shown on a gradient panel reading 'Powering the future'. Inter for app UI, data and instructions, shown in a charging screen at 42 per cent, 7.4 kW, 01:12 h remaining, $4.93" />
+  <Board movil={m08} alt="Signage on a concrete building facade: a wide gradient panel reading 'Powering the future' with the AMPIA mark" />
+  <Board movil={m09} alt="The AMPIA app icon, the monogram in white over a blue and green gradient, and the same icon in place on an iPhone home screen" />
+  <Board movil={m10} alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent. Below, a billboard in Colima, Mexico reading 'Tu recibo se pondrá a dieta'" />
+  <Board movil={m11} alt="Currently working on the UX/UI design" />
+</div>
 
-<Board
-  movil={b02}
-  alt="Branding and UX design for AMPIA, a network of EV charging stations across Mexico, and a sub-brand of the energy company EVCON. Below, an iPhone home screen with the AMPIA app icon"
-/>
-
-<Board movil={b03} alt="The AMPIA wordmark in white over a blue and green gradient" />
-
-<Board
-  movil={b04}
-  alt="Inspired by the curves of the charging cables and the charging cycle: continuous lines that flow and close, like energy itself. Beside the text, a charging unit carrying the mark"
-/>
-
-<Board
-  movil={b05}
-  alt="Construction of the AMPIA monogram: the rounded A built from continuous strokes over its geometric guides"
-/>
-
-<Board
-  movil={b06}
-  alt="Colour palette: #75F26B green, #66ACD9 light blue, #0268E4 blue, #143980 deep blue and #0E1A28 near-black"
-/>
-
-<Board
-  movil={b07}
-  alt="Type system. Space Grotesk for display, headlines and advertising, shown on a gradient panel reading 'Powering the future'. Inter for app UI, data and instructions, shown in a charging screen at 42 per cent, 7.4 kW, 01:12 h remaining, $4.93"
-/>
-
-<Board
-  movil={b08}
-  alt="Signage on a concrete building facade: a wide gradient panel reading 'Powering the future' with the AMPIA mark"
-/>
-
-<Board
-  movil={b09}
-  alt="The AMPIA app icon, the monogram in white over a blue and green gradient, and the same icon in place on an iPhone home screen"
-/>
-
-<Board
-  movil={b10}
-  alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent. Below, a billboard in Colima, Mexico reading 'Tu recibo se pondrá a dieta'"
-/>
-
-<Board movil={b11} alt="Currently working on the UX/UI design" />
+<div class="secuencia secuencia-desktop">
+  <Board desktop={d01} alt="AMPIA charging column under a solar canopy in a parking lot, its screen showing the brand mark and the line 'Powering the future'" />
+  <Board desktop={d02} alt="Branding and UX design for AMPIA, a network of EV charging stations across Mexico, and a sub-brand of the energy company EVCON. Beside the text, an iPhone home screen with the AMPIA app icon" />
+  <Board desktop={d03} alt="The AMPIA wordmark in white over a blue and green gradient" />
+  <Board desktop={d04} alt="Inspired by the curves of the charging cables and the charging cycle: continuous lines that flow and close, like energy itself. Beside the text, a charging unit carrying the mark" />
+  <Board desktop={d05} alt="Construction of the AMPIA monogram: the rounded A built from continuous strokes over its geometric guides" />
+  <Board desktop={d06} alt="Colour palette: #75F26B green, #66ACD9 light blue, #0268E4 blue, #143980 deep blue and #0E1A28 near-black" />
+  <Board desktop={d07} alt="Space Grotesk for display, headlines and advertising, in bold, medium, regular and light, shown on a gradient panel reading 'Powering the future'" />
+  <Board desktop={d08} alt="Signage on a concrete building facade: a wide gradient panel reading 'Powering the future' with the AMPIA mark" />
+  <Board desktop={d09} alt="Inter for app UI, data and instructions, in bold, medium, regular and light, shown in a charging screen at 42 per cent, 7.4 kW, 01:12 h remaining, $4.93" />
+  <Board desktop={d10} alt="The AMPIA app icon, the monogram in white over a blue and green gradient, and the same icon in place on an iPhone home screen" />
+  <Board desktop={d11} alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent. Below, a billboard in Colima, Mexico reading 'Tu recibo se pondrá a dieta'" />
+</div>
