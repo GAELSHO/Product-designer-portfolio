@@ -36,12 +36,14 @@ import d08 from './08-desktop.webp';
 import d09 from './09-desktop.webp';
 import d10 from './10-desktop.webp';
 import d11 from './11-desktop.webp';
+import d12 from './12-desktop.webp';
+import d13 from './13-desktop.webp';
 
 {/*
   Dos secuencias completas, no una con dos recortes: las versiones no van 1:1.
-  En móvil la tipografía es un solo board alto con Space Grotesk e Inter juntos;
-  en desktop son dos boards separados con la señalética en medio. Y el board
-  "Currently working on the UX/UI design" solo existe en móvil.
+  Móvil son 11 boards y desktop 13: en móvil la tipografía es un solo board alto
+  con Space Grotesk e Inter juntos, y el "by EVCON" va en el mismo board que el
+  espectacular. En desktop cada una de esas va aparte.
 
   Solo se descarga la secuencia que se ve — la otra está en `display:none` y sus
   imágenes son `loading="lazy"`, así que nunca entran en viewport. Está medido.
@@ -76,5 +78,7 @@ import d11 from './11-desktop.webp';
   <Board desktop={d08} alt="Signage on a concrete building facade: a wide gradient panel reading 'Powering the future' with the AMPIA mark" />
   <Board desktop={d09} alt="Inter for app UI, data and instructions, in bold, medium, regular and light, shown in a charging screen at 42 per cent, 7.4 kW, 01:12 h remaining, $4.93" />
   <Board desktop={d10} alt="The AMPIA app icon, the monogram in white over a blue and green gradient, and the same icon in place on an iPhone home screen" />
-  <Board desktop={d11} alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent. Below, a billboard in Colima, Mexico reading 'Tu recibo se pondrá a dieta'" />
+  <Board desktop={d11} alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent" />
+  <Board desktop={d12} alt="A billboard in Colima, Mexico reading 'Tu recibo se pondra a dieta', with an EVCON utility bill wrapped in a measuring tape" />
+  <Board desktop={d13} alt="Currently working on the UX/UI design" />
 </div>
