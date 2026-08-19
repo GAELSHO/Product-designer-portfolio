@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import TituloRotativo from '@/components/TituloRotativo.astro';
 import TarjetaProyecto from '@/components/TarjetaProyecto.astro';
+import Servicios from '@/components/Servicios.astro';
 import { getCollection } from 'astro:content';
 import { withBase } from '@/lib/url';
 
@@ -71,6 +72,8 @@ const proyectos = (await getCollection('work')).sort((a, b) => a.data.orden - b.
       }
     </div>
   </section>
+
+  <Servicios />
 
   <section id="about" class="mt-24 max-w-2xl scroll-mt-28">
     <h2 class="text-ink-500 text-sm font-medium tracking-widest uppercase">About</h2>

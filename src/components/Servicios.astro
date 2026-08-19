@@ -1,0 +1,154 @@
+---
+/**
+ * Sección de servicios de la home. El contenido sale de los documentos de
+ * precios del estudio (SHO-BR / SHO-CP / SHO-RS), sin los precios: aquí la
+ * sección presenta el servicio, no cotiza.
+ */
+const servicios = [
+  {
+    numero: '01',
+    titulo: 'Brand Identity',
+    descripcion:
+      'Visual identity built from the logo to its applications. Two packages depending on where your business is: start with the essentials, or open the doors with everything ready.',
+    paquetes: [
+      {
+        nombre: 'Essential',
+        detalle: 'The essentials to get started',
+        incluye: [
+          'Logo design',
+          'Logo variants',
+          'Colour palette',
+          'Typography',
+          'Brand presentation',
+          'Profile picture and cover for social media',
+          'Story highlight covers',
+          'Ready-to-use files',
+        ],
+      },
+      {
+        nombre: 'Complete',
+        detalle: 'Everything ready for opening day',
+        incluye: [
+          'Everything in Essential',
+          'Initial social media post design',
+          '5 brand applications tailored to your business',
+          'Complete brand manual',
+          'Files ready for print and digital media',
+        ],
+      },
+    ],
+    nota: 'Applications can be menus, business cards, uniforms, stationery, banners, labels, packaging or flyers — whatever your business actually uses.',
+  },
+  {
+    numero: '02',
+    titulo: 'Character Design',
+    descripcion:
+      'A mascot with a personality of its own for your brand. Original design, ready-to-use poses, and files delivered in the formats you need.',
+    paquetes: [
+      {
+        nombre: 'Essential',
+        detalle: 'Character and essential poses',
+        incluye: [
+          'Original character design',
+          '3 poses',
+          'Versions for light and dark backgrounds',
+          'Delivery in transparent PNG',
+        ],
+      },
+      {
+        nombre: 'Complete',
+        detalle: 'With animation and stickers',
+        incluye: [
+          'Original character design',
+          '4 poses',
+          '2 animated GIFs for stories and social media',
+          'Sticker version',
+          'Print-ready sticker files',
+          'Delivery in PNG, GIF and JPG',
+        ],
+      },
+    ],
+  },
+  {
+    numero: '03',
+    titulo: 'Social Media',
+    descripcion:
+      'Monthly strategy, design and publishing. A consistent system to build presence and grow the brand.',
+    paquetes: [
+      {
+        nombre: 'Essential plan',
+        detalle: 'Monthly · strategy and ongoing content',
+        incluye: [
+          'Content strategy',
+          'Monthly planning and publishing calendar',
+          'Content design and copywriting',
+          '3 posts a week — 12 a month',
+          'Scheduling and publishing',
+        ],
+      },
+      {
+        nombre: 'Full plan',
+        detalle: 'Monthly · content, photo and video',
+        incluye: [
+          'Everything in the Essential plan',
+          'Monthly photo and video session',
+          'Photo and video editing',
+          'Content adapted for social media',
+        ],
+      },
+    ],
+    nota: 'Plans run for a minimum of three months — consistency is what makes a strategy work. Photo sessions are also available on their own: 15 edited photos and 3 short videos, shot on site and delivered ready to post.',
+  },
+];
+---
+
+<section id="services" class="mt-24 scroll-mt-28">
+  <h2 class="text-ink-500 text-sm font-medium tracking-widest uppercase">Services</h2>
+
+  <div class="mt-4 flex flex-col">
+    {
+      servicios.map((servicio) => (
+        <article class="border-ink-100 border-b py-12 last:border-b-0 sm:py-16">
+          <div class="grid gap-8 lg:grid-cols-[minmax(0,20rem)_1fr] lg:gap-16">
+            <div>
+              <span class="text-ink-500 text-sm" aria-hidden="true">
+                {servicio.numero}
+              </span>
+              <h3 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                {servicio.titulo}
+              </h3>
+              <p class="text-ink-700 mt-4 font-light text-pretty">{servicio.descripcion}</p>
+            </div>
+
+            <div class="grid gap-10 sm:grid-cols-2 sm:gap-12">
+              {servicio.paquetes.map((paquete) => (
+                <div>
+                  <h4 class="text-ink-500 text-xs font-medium tracking-widest uppercase">
+                    {paquete.nombre}
+                  </h4>
+                  <p class="text-ink-500 mt-1.5 text-sm font-light">{paquete.detalle}</p>
+                  <ul class="mt-5 flex flex-col gap-2.5">
+                    {paquete.incluye.map((item) => (
+                      <li class="text-ink-700 flex gap-3 font-light">
+                        <span class="text-ink-300 select-none" aria-hidden="true">
+                          —
+                        </span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {servicio.nota && (
+            <p class="text-ink-500 mt-10 max-w-[72ch] text-sm font-light text-pretty">
+              {servicio.nota}
+            </p>
+          )}
+        </article>
+      ))
+    }
+  </div>
+</section>
