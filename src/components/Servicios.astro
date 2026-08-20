@@ -4,12 +4,53 @@
  * precios del estudio (SHO-BR / SHO-CP / SHO-RS), sin los precios: aquí la
  * sección presenta el servicio, no cotiza.
  *
- * Jerarquía sin sombras (sobre #191919 no se ven): los paquetes van en cards
- * con superficie `ink-50`, y el recomendado se invierte a crema (`ink-950`),
- * que es el mayor contraste disponible en la paleta. Las cifras grandes
- * (03 poses, 05 applications) replican la ficha de los documentos originales.
+ * Cada punto del paquete es una fila con icono, título y una línea que explica
+ * qué incluye. Eso obliga a agrupar: las listas largas de los documentos se
+ * condensan en cuatro filas por paquete, que es lo que se lee de un vistazo.
+ *
+ * El paquete completo va en oscuro y el básico en crema. La jerarquía la
+ * hacen la inversión de superficie y el acento, no sombras (ver CLAUDE.md).
  */
-const servicios = [
+
+/** Iconos de línea, en trazos sueltos para poder pintarlos con currentColor. */
+const iconos = {
+  lapiz: ['M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z', 'm15 5 4 4'],
+  presentacion: ['M2 3h20', 'M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3', 'm7 21 5-5 5 5'],
+  movil: ['M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z', 'M12 18h.01'],
+  descarga: ['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'm7 10 5 5 5-5', 'M12 15V3'],
+  bolsa: ['M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z', 'M3 6h18', 'M16 10a4 4 0 0 1-8 0'],
+  destello: ['M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2Z'],
+  calendario: ['M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z', 'M16 2v4', 'M8 2v4', 'M3 10h18'],
+  camara: ['M9.5 4h5L17 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3Z', 'M12 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z'],
+  reproducir: ['M6 3.5 20 12 6 20.5Z'],
+  diana: ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z', 'M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z', 'M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z'],
+} as const;
+
+type Icono = keyof typeof iconos;
+
+interface Fila {
+  icono: Icono;
+  titulo: string;
+  detalle: string;
+}
+
+interface Paquete {
+  nombre: string;
+  detalle: string;
+  /** El paquete completo: va en oscuro y lleva el destello. */
+  completo?: boolean;
+  filas: Fila[];
+  cifras?: { n: string; etiqueta: string }[];
+}
+
+interface Servicio {
+  numero: string;
+  titulo: string;
+  descripcion: string;
+  paquetes: Paquete[];
+}
+
+const servicios: Servicio[] = [
   {
     numero: '01',
     titulo: 'Brand Identity',
@@ -18,28 +59,55 @@ const servicios = [
     paquetes: [
       {
         nombre: 'Essential',
-        detalle: 'The essentials to get started',
-        incluye: [
-          'Logo design',
-          'Logo variants',
-          'Colour palette',
-          'Typography',
-          'Brand presentation',
-          'Profile picture and cover for social media',
-          'Story highlight covers',
-          'Ready-to-use files',
+        detalle: 'The essentials to get started.',
+        filas: [
+          {
+            icono: 'lapiz',
+            titulo: 'Brand identity',
+            detalle: 'Logo design, variants, colour palette and typography.',
+          },
+          {
+            icono: 'presentacion',
+            titulo: 'Brand presentation',
+            detalle: 'Guidelines to use your brand consistently.',
+          },
+          {
+            icono: 'movil',
+            titulo: 'Social media',
+            detalle: 'Profile picture, cover and story highlight covers.',
+          },
+          {
+            icono: 'descarga',
+            titulo: 'Ready-to-use files',
+            detalle: 'All your brand files, organised and ready to use.',
+          },
         ],
       },
       {
         nombre: 'Complete',
-        detalle: 'Everything ready for opening day',
-        destacado: true,
-        incluye: [
-          'Everything in Essential',
-          'Initial social media post design',
-          'Brand applications tailored to your business',
-          'Complete brand manual',
-          'Files ready for print and digital media',
+        detalle: 'Everything ready for opening day.',
+        completo: true,
+        filas: [
+          {
+            icono: 'lapiz',
+            titulo: 'Everything in Essential',
+            detalle: 'All the essentials to build your brand foundation.',
+          },
+          {
+            icono: 'movil',
+            titulo: 'Social media launch',
+            detalle: 'Initial post designs and profile setup to launch your brand.',
+          },
+          {
+            icono: 'bolsa',
+            titulo: 'Custom brand applications',
+            detalle: 'Materials tailored to your business and audience.',
+          },
+          {
+            icono: 'presentacion',
+            titulo: 'Complete brand manual',
+            detalle: 'Guidelines, assets and files ready for print and digital.',
+          },
         ],
         cifras: [
           { n: '05', etiqueta: 'Applications' },
@@ -56,24 +124,56 @@ const servicios = [
     paquetes: [
       {
         nombre: 'Essential',
-        detalle: 'Character and essential poses',
-        incluye: [
-          'Original character design',
-          'Versions for light and dark backgrounds',
-          'Delivery in transparent PNG',
+        detalle: 'The character and its core poses.',
+        filas: [
+          {
+            icono: 'destello',
+            titulo: 'Original character',
+            detalle: 'A mascot designed from scratch for your brand.',
+          },
+          {
+            icono: 'lapiz',
+            titulo: 'Core poses',
+            detalle: 'Three poses covering your most common needs.',
+          },
+          {
+            icono: 'presentacion',
+            titulo: 'Light and dark versions',
+            detalle: 'Adapted to sit on any background.',
+          },
+          {
+            icono: 'descarga',
+            titulo: 'Transparent PNG',
+            detalle: 'Delivered with no background, ready to place.',
+          },
         ],
         cifras: [{ n: '03', etiqueta: 'Poses' }],
       },
       {
         nombre: 'Complete',
-        detalle: 'With animation and stickers',
-        destacado: true,
-        incluye: [
-          'Original character design',
-          'Animated GIFs for stories and social media',
-          'Sticker version',
-          'Print-ready sticker files',
-          'Delivery in PNG, GIF and JPG',
+        detalle: 'With animation and stickers.',
+        completo: true,
+        filas: [
+          {
+            icono: 'destello',
+            titulo: 'Everything in Essential',
+            detalle: 'The character, its poses and background versions.',
+          },
+          {
+            icono: 'lapiz',
+            titulo: 'Wider pose range',
+            detalle: 'A fourth pose for more situations.',
+          },
+          {
+            icono: 'reproducir',
+            titulo: 'Animated GIFs',
+            detalle: 'Two loops made for stories and social media.',
+          },
+          {
+            icono: 'bolsa',
+            titulo: 'Sticker pack',
+            detalle: 'Digital stickers plus print-ready files.',
+          },
         ],
         cifras: [
           { n: '04', etiqueta: 'Poses' },
@@ -90,24 +190,56 @@ const servicios = [
     paquetes: [
       {
         nombre: 'Essential plan',
-        detalle: 'Monthly · strategy and ongoing content',
-        incluye: [
-          'Content strategy',
-          'Monthly planning and publishing calendar',
-          'Content design and copywriting',
-          'Scheduling and publishing',
+        detalle: 'Strategy and ongoing content.',
+        filas: [
+          {
+            icono: 'diana',
+            titulo: 'Content strategy',
+            detalle: 'A plan for what to post, and why.',
+          },
+          {
+            icono: 'calendario',
+            titulo: 'Monthly calendar',
+            detalle: 'Planning and publishing schedule for the month.',
+          },
+          {
+            icono: 'lapiz',
+            titulo: 'Design and copywriting',
+            detalle: 'Every post designed and written for your brand.',
+          },
+          {
+            icono: 'movil',
+            titulo: 'Scheduling and publishing',
+            detalle: 'Posts go out on time, three times a week.',
+          },
         ],
         cifras: [{ n: '12', etiqueta: 'Posts a month' }],
       },
       {
         nombre: 'Full plan',
-        detalle: 'Monthly · content, photo and video',
-        destacado: true,
-        incluye: [
-          'Everything in the Essential plan',
-          'Monthly photo and video session',
-          'Photo and video editing',
-          'Content adapted for social media',
+        detalle: 'Content, photo and video.',
+        completo: true,
+        filas: [
+          {
+            icono: 'diana',
+            titulo: 'Everything in Essential',
+            detalle: 'Strategy, calendar, design and publishing.',
+          },
+          {
+            icono: 'camara',
+            titulo: 'Monthly session',
+            detalle: 'Photo and video shot on site every month.',
+          },
+          {
+            icono: 'reproducir',
+            titulo: 'Editing',
+            detalle: 'Colour, cuts and optimisation for social media.',
+          },
+          {
+            icono: 'movil',
+            titulo: 'Adapted content',
+            detalle: 'Reformatted to fit each platform.',
+          },
         ],
         cifras: [
           { n: '12', etiqueta: 'Posts a month' },
@@ -129,21 +261,17 @@ const servicios = [
   <div class="border-ink-100 divide-ink-100 mt-8 divide-y border-t">
     {
       servicios.map((servicio) => (
-        <article class="grid gap-8 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-16 sm:py-20">
-          {/* Columna izquierda: 01.Título en grande, descripción y nota.
+        <article class="grid gap-8 py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-16">
+          {/* Columna izquierda: 01.Título en grande y descripción.
               En desktop se queda pegada mientras las cards hacen scroll. */}
           <div class="lg:sticky lg:top-24 lg:self-start">
             <h3 class="text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight font-semibold tracking-tight text-balance">
-              <span class="text-ink-500">{servicio.numero}.</span>{servicio.titulo}
+              <span class="text-ink-500">{servicio.numero}.</span>
+              {servicio.titulo}
             </h3>
             <p class="text-ink-700 mt-5 max-w-[46ch] font-light text-pretty">
               {servicio.descripcion}
             </p>
-            {servicio.nota && (
-              <p class="text-ink-500 mt-5 max-w-[46ch] text-sm font-light text-pretty">
-                {servicio.nota}
-              </p>
-            )}
           </div>
 
           {/* Columna derecha: las cards una encima de otra. */}
@@ -151,53 +279,97 @@ const servicios = [
             {servicio.paquetes.map((paquete) => (
               <div
                 class={
-                  paquete.destacado
-                    ? 'tarjeta-magica magica-clara bg-ink-950 text-background flex flex-col rounded-3xl p-7 sm:rounded-[2rem] sm:p-9'
-                    : 'tarjeta-magica magica-oscura bg-ink-50 border-ink-100 flex flex-col rounded-3xl border p-7 sm:rounded-[2rem] sm:p-9'
+                  paquete.completo
+                    ? 'tarjeta-magica magica-oscura bg-ink-50 border-ink-100 flex flex-col rounded-3xl border p-7 sm:rounded-[2rem] sm:p-9'
+                    : 'tarjeta-magica magica-clara bg-ink-950 text-background flex flex-col rounded-3xl p-7 sm:rounded-[2rem] sm:p-9'
                 }
               >
-                <div class="flex items-start justify-between gap-4">
-                  <div>
-                    <h4 class="text-xl font-medium tracking-tight sm:text-2xl">
-                      {paquete.nombre}
-                    </h4>
-                    <p
-                      class={
-                        paquete.destacado
-                          ? 'text-background/60 mt-1 text-sm font-light'
-                          : 'text-ink-500 mt-1 text-sm font-light'
-                      }
-                    >
-                      {paquete.detalle}
-                    </p>
-                  </div>
-                  {paquete.destacado && (
-                    <span class="border-background/25 mt-1 shrink-0 rounded-full border px-3 py-1 text-[10px] font-medium tracking-widest uppercase">
-                      Recommended
+                <div class="flex items-center gap-3">
+                  <h4 class="text-2xl font-semibold tracking-tight sm:text-3xl">{paquete.nombre}</h4>
+                  {paquete.completo && (
+                    <span class="border-ink-300/40 bg-ink-100 text-acento flex size-9 items-center justify-center rounded-xl border">
+                      <span class="sr-only">Recommended</span>
+                      <svg
+                        class="size-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        {iconos.destello.map((d) => (
+                          <path d={d} />
+                        ))}
+                      </svg>
                     </span>
                   )}
                 </div>
 
-                <ul class="mt-7 mb-8 flex flex-col gap-2.5">
-                  {paquete.incluye.map((item) => (
-                    <li
-                      class={
-                        paquete.destacado
-                          ? 'text-background/80 flex gap-3 font-light'
-                          : 'text-ink-700 flex gap-3 font-light'
-                      }
-                    >
+                <p
+                  class={
+                    paquete.completo
+                      ? 'text-ink-500 mt-1.5 font-light'
+                      : 'text-background/60 mt-1.5 font-light'
+                  }
+                >
+                  {paquete.detalle}
+                </p>
+
+                {/* Regla corta bajo el subtítulo, como en la referencia. */}
+                <span
+                  class={
+                    paquete.completo
+                      ? 'bg-acento mt-5 block h-0.5 w-14 rounded-full'
+                      : 'bg-background mt-5 block h-0.5 w-14 rounded-full'
+                  }
+                  aria-hidden="true"
+                />
+
+                <ul
+                  class={
+                    paquete.completo
+                      ? 'divide-ink-100 mt-6 mb-8 divide-y'
+                      : 'divide-background/10 mt-6 mb-8 divide-y'
+                  }
+                >
+                  {paquete.filas.map((fila) => (
+                    <li class="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
                       <span
                         class={
-                          paquete.destacado
-                            ? 'text-background/35 select-none'
-                            : 'text-ink-300 select-none'
+                          paquete.completo
+                            ? 'border-ink-300/40 bg-ink-100 text-acento flex size-12 shrink-0 items-center justify-center rounded-2xl border'
+                            : 'border-background/20 text-background flex size-12 shrink-0 items-center justify-center rounded-2xl border'
                         }
                         aria-hidden="true"
                       >
-                        —
+                        <svg
+                          class="size-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.6"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          {iconos[fila.icono].map((d) => (
+                            <path d={d} />
+                          ))}
+                        </svg>
                       </span>
-                      {item}
+                      <div class="min-w-0">
+                        <h5 class="font-medium">{fila.titulo}</h5>
+                        <p
+                          class={
+                            paquete.completo
+                              ? 'text-ink-500 mt-0.5 text-sm font-light text-pretty'
+                              : 'text-background/60 mt-0.5 text-sm font-light text-pretty'
+                          }
+                        >
+                          {fila.detalle}
+                        </p>
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -205,19 +377,27 @@ const servicios = [
                 {paquete.cifras && (
                   <div
                     class={
-                      paquete.destacado
-                        ? 'border-background/15 mt-auto flex gap-10 border-t pt-6 sm:gap-14'
-                        : 'border-ink-100 mt-auto flex gap-10 border-t pt-6 sm:gap-14'
+                      paquete.completo
+                        ? 'border-ink-100 divide-ink-100 mt-auto flex divide-x border-t'
+                        : 'border-background/10 divide-background/10 mt-auto flex divide-x border-t'
                     }
                   >
                     {paquete.cifras.map((cifra) => (
-                      <div>
-                        <span class="text-3xl font-light sm:text-4xl">{cifra.n}</span>
+                      <div class="pt-6 pr-10 pl-10 first:pl-0 last:pr-0 sm:pr-14 sm:pl-14">
                         <span
                           class={
-                            paquete.destacado
-                              ? 'text-background/50 mt-1 block text-[10px] font-medium tracking-widest uppercase'
-                              : 'text-ink-500 mt-1 block text-[10px] font-medium tracking-widest uppercase'
+                            paquete.completo
+                              ? 'text-acento text-3xl font-light sm:text-4xl'
+                              : 'text-background text-3xl font-light sm:text-4xl'
+                          }
+                        >
+                          {cifra.n}
+                        </span>
+                        <span
+                          class={
+                            paquete.completo
+                              ? 'text-ink-500 mt-1 block text-[10px] font-medium tracking-widest uppercase'
+                              : 'text-background/50 mt-1 block text-[10px] font-medium tracking-widest uppercase'
                           }
                         >
                           {cifra.etiqueta}

@@ -17,6 +17,12 @@
   --color-ink-700: #c3c1b8;
   --color-ink-950: #f4f2eb;
 
+  /* Único color del sitio, fuera de la escala neutra: el acento de las cards
+     de servicios (iconos, cifras y la regla del paquete completo). Se usa solo
+     sobre la card oscura; sobre la crema el papel de acento lo hace el propio
+     fondo. Si el acento sobra o cambia, es este valor y nada más. */
+  --color-acento: #c8dd8f;
+
   /* Alias que espera el dock de unlumen-ui (convención de shadcn):
      habilitan `bg-background`, `text-foreground`, `border-foreground/10`, ... */
   --color-background: #191919;
