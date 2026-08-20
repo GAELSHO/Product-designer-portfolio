@@ -122,23 +122,34 @@ const servicios = [
 ---
 
 <section id="services" class="mt-24 scroll-mt-28">
-  <h2 class="text-ink-500 text-sm font-medium tracking-widest uppercase">Services</h2>
+  {/* Título de sección al peso de la casa: grande y en mayúsculas, con la
+      línea debajo. Las líneas entre servicios las pone el divide-y. */}
+  <h2 class="text-[clamp(2.25rem,5.5vw,3.75rem)] font-semibold tracking-tight uppercase">
+    Our Services
+  </h2>
 
-  <div class="mt-12 flex flex-col gap-20 sm:gap-24">
+  <div class="border-ink-100 divide-ink-100 mt-8 divide-y border-t">
     {
       servicios.map((servicio) => (
-        <article>
-          <header class="max-w-2xl">
-            <span class="text-ink-500 text-sm" aria-hidden="true">
-              {servicio.numero}
-            </span>
-            <h3 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              {servicio.titulo}
+        <article class="grid gap-8 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-16 sm:py-20">
+          {/* Columna izquierda: 01.Título en grande, descripción y nota.
+              En desktop se queda pegada mientras las cards hacen scroll. */}
+          <div class="lg:sticky lg:top-24 lg:self-start">
+            <h3 class="text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight font-semibold tracking-tight text-balance">
+              <span class="text-ink-500">{servicio.numero}.</span>{servicio.titulo}
             </h3>
-            <p class="text-ink-700 mt-4 font-light text-pretty">{servicio.descripcion}</p>
-          </header>
+            <p class="text-ink-700 mt-5 max-w-[46ch] font-light text-pretty">
+              {servicio.descripcion}
+            </p>
+            {servicio.nota && (
+              <p class="text-ink-500 mt-5 max-w-[46ch] text-sm font-light text-pretty">
+                {servicio.nota}
+              </p>
+            )}
+          </div>
 
-          <div class="mt-8 grid gap-4 sm:gap-6 lg:grid-cols-2">
+          {/* Columna derecha: las cards una encima de otra. */}
+          <div class="flex flex-col gap-4 sm:gap-6">
             {servicio.paquetes.map((paquete) => (
               <div
                 class={
@@ -220,12 +231,6 @@ const servicios = [
               </div>
             ))}
           </div>
-
-          {servicio.nota && (
-            <p class="text-ink-500 mt-6 max-w-[72ch] text-sm font-light text-pretty">
-              {servicio.nota}
-            </p>
-          )}
         </article>
       ))
     }
@@ -246,6 +251,9 @@ const servicios = [
   */
   .tarjeta-magica {
     position: relative;
+    transition:
+      transform 0.35s ease,
+      box-shadow 0.35s ease;
   }
 
   .tarjeta-magica::before,
@@ -294,6 +302,16 @@ const servicios = [
     .tarjeta-magica:hover::before,
     .tarjeta-magica:hover::after {
       opacity: 1;
+    }
+
+    /*
+      La card se levanta y suelta sombra. Una sombra normal sería invisible
+      aquí, pero #191919 no es negro puro: con mucha alfa y mucho radio se
+      percibe el oscurecimiento — y el movimiento hace el resto.
+    */
+    .tarjeta-magica:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -16px rgb(0 0 0 / 0.55);
     }
   }
 

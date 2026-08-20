@@ -110,8 +110,11 @@ las utilidades: `--color-ink-600` habilita `text-ink-600`, `bg-ink-600`, `border
   "qué tan claro" sino cuánto contrasta con el fondo: `ink-50` apenas se despega del fondo,
   `ink-950` es el color del texto. Escrito así, cambiar el tema es tocar seis valores en `@theme`
   y nada más — y por eso `body` usa `bg-background`, no `bg-black`.
-- Cuidado con las sombras: sobre fondo negro no se ven. Para separar algo del fondo se usa
-  geometría (tamaño, espaciado) o un borde claro, no `shadow-*`.
+- Cuidado con las sombras: sobre fondo negro casi no se ven. Para separar algo del fondo se usa
+  geometría (tamaño, espaciado) o un borde claro, no `shadow-*`. La excepción medida: como el fondo
+  es `#191919` y no negro puro, una sombra con mucha alfa y mucho radio sí se percibe — las cards de
+  servicios la usan en hover, acompañada de un `translateY` que es lo que realmente vende la
+  elevación.
 - Tipografía: **solo Poppins** (se carga desde Google Fonts en `BaseLayout`). Los pesos en uso son
   300 / 400 / 500 / 600; si necesitas otro, añádelo a la URL de la fuente o no cargará —
   `font-medium` estuvo un tiempo pidiendo un 500 que no se descargaba y el navegador lo sustituía
