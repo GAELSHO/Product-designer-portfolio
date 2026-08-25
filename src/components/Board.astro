@@ -16,6 +16,9 @@ import type { ImageMetadata } from 'astro';
  *   ilegibles al reducirse a un tercio.
  * - `movil` sola: el board está compuesto a proporción de teléfono. En desktop
  *   se limita el ancho (`pieza-movil`) para que no mida 1800px de alto.
+ *
+ * Los boards se pintan dentro de la columna de <main>, no a sangre: ver el
+ * `sizes` de abajo y el <style> de `pages/work/[slug].astro`.
  */
 interface Props {
   desktop?: ImageMetadata;
@@ -31,23 +34,37 @@ if (!desktop && !movil) {
 
 // Un board compuesto para teléfono no se estira a ancho completo en desktop.
 const soloMovil = !desktop;
-// Los boards van a sangre, así que ocupan el ancho del viewport. Sin este
-// `sizes` el navegador supondría el ancho del contenedor y pediría un archivo
-// que se ve blando al estirarlo.
-const sizes = soloMovil ? '(min-width: 40rem) 32rem, 100vw' : '100vw';
-const anchos = [640, 750, 828, 1080, 1280, 1668, 2048, 2560, 3200, 3840, 4480];
 
-const pedir = (src: ImageMetadata) =>
-  getImage({
+// El ancho real en el que se pinta el board, que es el de la columna de
+// <main>: `max-w-6xl` (72rem) menos su padding lateral —`px-4` en móvil y
+// `px-6` de `sm:` en adelante—. Sin este `sizes` el navegador supone el ancho
+// del viewport y pide una variante mucho mayor de la que va a usar.
+const COLUMNA = 1104; // 72rem − 2 × 1.5rem
+const sizes = soloMovil
+  ? '(min-width: 40rem) 32rem, calc(100vw - 2rem)'
+  : `(min-width: 72rem) ${COLUMNA}px, (min-width: 40rem) calc(100vw - 3rem), calc(100vw - 2rem)`;
+
+// El tope son los 1104px de la columna a 3x. Por encima de eso ningún
+// dispositivo pide nada, y cada variante de más es tiempo de build y peso en
+// `dist/` que no se descarga jamás.
+const TOPE = COLUMNA * 3;
+const anchos = [640, 750, 828, 1080, 1280, 1668, 2048, 2208, 2560, 3312];
+
+const pedir = (src: ImageMetadata) => {
+  // Nunca pedir más ancho que el original: Astro no amplía.
+  const techo = Math.min(src.width, TOPE);
+  const widths = [...new Set([...anchos.filter((w) => w < techo), techo])];
+
+  return getImage({
     src,
-    // Nunca pedir más ancho que el original: Astro no amplía.
-    widths: [...anchos.filter((w) => w < src.width), src.width],
+    widths,
     format: 'webp',
     // Por encima del default (~80). Estos boards son composiciones con texto y
     // degradados grandes, que es justo donde WebP se nota: a 80 el mockup de
     // hormigón pierde grano y los degradados marcan bandas.
     quality: 88,
   });
+};
 
 const imgDesktop = desktop ? await pedir(desktop) : undefined;
 const imgMovil = movil ? await pedir(movil) : undefined;

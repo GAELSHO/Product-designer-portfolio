@@ -131,11 +131,12 @@ const descripcionMeta = `${subtitulo}. ${tags.join(', ')}.`;
   }
 
   /*
-    Los boards van pegados: son composiciones continuas, así que cualquier
-    hueco entre ellos rompe la lectura. Sin margen, sin radio y sin sombra.
+    Los boards van pegados entre sí: son composiciones continuas, así que
+    cualquier hueco entre ellos rompe la lectura. Sin margen y sin sombra.
   */
   .cuerpo :global(.pieza) {
     display: block;
+    width: 100%;
     margin-block: 0;
   }
 
@@ -146,14 +147,25 @@ const descripcionMeta = `${subtitulo}. ${tags.join(', ')}.`;
   }
 
   /*
-    A sangre: se sale del padding lateral de <main> hasta tocar los dos bordes
-    de la pantalla. El `max-width` evita que el ancho del scrollbar provoque
-    scroll horizontal en los navegadores que lo pintan por encima del layout.
+    La secuencia se queda dentro de la columna de <main> en vez de ir a sangre.
+    Dos razones, y la segunda es la que manda:
+
+    1. El aire lateral la lee como una pieza y no como un fondo de página.
+    2. A sangre el board se pinta a 100vw, así que una pantalla retina pedía la
+       variante de 2880px y subiendo. En la columna se pinta a 1104px como
+       máximo, y a igualdad de archivo eso es **más densidad de píxel**: se ve
+       más nítido y además pesa menos. Está medido.
+
+    El radio solo en los extremos: por dentro las piezas siguen a tope.
   */
-  .cuerpo :global(.pieza) {
-    width: 100vw;
-    max-width: 100vw;
-    margin-inline: calc(50% - 50vw);
+  .cuerpo :global(.secuencia .pieza:first-child img) {
+    border-start-start-radius: 1.5rem;
+    border-start-end-radius: 1.5rem;
+  }
+
+  .cuerpo :global(.secuencia .pieza:last-child img) {
+    border-end-start-radius: 1.5rem;
+    border-end-end-radius: 1.5rem;
   }
 
   /*
@@ -176,26 +188,14 @@ const descripcionMeta = `${subtitulo}. ${tags.join(', ')}.`;
   }
 
   /*
-    En desktop, un board compuesto a proporción de teléfono no se estira: a
-    ancho completo mediría más de 1800px de alto. Se queda en una columna
-    centrada del ancho de un móvil, y ahí sí lleva radio porque ya no toca los
-    bordes de la pantalla.
+    En desktop, un board compuesto a proporción de teléfono no se estira ni
+    al ancho de la columna: mediría más de 1800px de alto. Se queda en una
+    columna centrada del ancho de un móvil.
   */
   @media (min-width: 40rem) {
     .cuerpo :global(.pieza-movil) {
-      width: 100%;
       max-width: 32rem;
       margin-inline: auto;
-    }
-
-    .cuerpo :global(.pieza-movil:first-child img) {
-      border-start-start-radius: 1.5rem;
-      border-start-end-radius: 1.5rem;
-    }
-
-    .cuerpo :global(.pieza-movil:last-child img) {
-      border-end-start-radius: 1.5rem;
-      border-end-end-radius: 1.5rem;
     }
   }
 

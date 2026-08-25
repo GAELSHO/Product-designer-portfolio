@@ -243,9 +243,20 @@ Las dos props son opcionales, pero hace falta al menos una:
 | las dos | Boards con texto compuesto | `<picture>`: cada pantalla descarga **solo su recorte**, nunca los dos |
 | `movil` sola | Board compuesto a proporción de teléfono | En desktop se limita a `32rem` centrado, o mediría más de 1800px de alto |
 
-**Los boards van a sangre y pegados entre sí**: son composiciones continuas, así que no llevan
-margen, ni radio, ni hueco entre ellos. El ancho completo se consigue con
-`margin-inline: calc(50% - 50vw)`, que los saca del padding lateral de `<main>`.
+**Los boards van pegados entre sí, dentro de la columna**: son composiciones continuas, así que
+no llevan margen ni hueco entre ellos, y el radio solo lo lleva la secuencia en sus dos extremos.
+No van a sangre: se quedan en los 1104px de `<main>` (`max-w-6xl` menos su padding lateral).
+
+Ese ancho no es solo estético, y es la razón por la que no conviene volver a `100vw`: **el board se
+descarga al ancho en el que se pinta**. A sangre, un portátil retina pedía la variante de 2880px;
+en la columna pide la de 2208px, que del mismo archivo es más densidad de píxel por pulgada —se ve
+más nítido y pesa menos—. Medido en el case study de AMPIA a 1440px @2x: 2.72MB a sangre contra
+1.57MB en columna.
+
+Por eso `Board.astro` declara el `sizes` con el ancho real de la columna y no con `100vw`, y por eso
+la escala de anchos se corta en 3312px (1104 × 3). Si algún día cambia el ancho de `<main>`, hay que
+mover `COLUMNA` en `Board.astro` con él: un `sizes` que miente hace que el navegador elija mal, y no
+falla el build ni se ve en local con una pantalla normal.
 
 **El `alt` de un board no es decorativo.** Estos boards llevan el texto dentro, así que el `alt` es
 lo único que pueden leer Google y un lector de pantalla: escríbelo con el copy real de la pieza, no
@@ -254,7 +265,7 @@ con "board de tipografías". Si cambias el texto de un board, cambia también su
 **Si un board se ve borroso o su texto no se lee, la salida es sacar ese texto de la imagen** y
 escribirlo en el `.mdx` como texto normal: se reordena solo, se lee igual a cualquier ancho, se
 puede seleccionar y Google lo indexa. Los estilos de párrafos y encabezados ya están puestos por si
-hace falta; la columna de lectura se queda en `62ch` aunque los boards vayan a ancho completo.
+hace falta; la columna de lectura se queda en `62ch` aunque los boards ocupen el ancho entero.
 
 Los estilos del cuerpo están en el `<style>` de `src/pages/work/[slug].astro`, no en el markdown:
 el `.mdx` solo debería tener contenido.
