@@ -138,12 +138,16 @@ Empareja siempre `group-hover:` con `group-focus-visible:` para que el teclado l
 estado que el ratón.
 
 **Componentes.** `.astro` por defecto — el sitio es estático y casi no necesita JS de cliente. React
-está instalado, pero **solo para islas**: hoy son dos, el dock y la palabra que rota en el título.
+está instalado, pero **solo para islas**: hoy son tres, el dock, la palabra que rota en el título y
+el puntero personalizado.
 Nada de convertir páginas a `.tsx` porque sí; si un componente no necesita estado ni eventos, va en
 `.astro` y pesa cero.
 
 Cada isla nueva arrastra su coste: el runtime de React ya son ~60KB gzip y `motion` otros ~48KB,
-compartidos entre todas. Antes de añadir una tercera, comprueba que el efecto no salga en CSS.
+compartidos entre todas. Antes de añadir una más, comprueba que el efecto no salga en CSS —así se
+hizo el brillo de las cards de servicios, que en React habrían sido seis islas—. Cuando de verdad
+hace falta JS, lo que queda es solo el componente: `SmoothCursor` son 1.7KB gzip porque React y
+`motion` ya venían con las otras dos.
 
 **El dock es una isla React.** `src/components/unlumen-ui/dock.tsx` es el componente de
 [unlumen.com](https://unlumen.com) traído con `npx shadcn@latest add @unlumen-ui/dock`; usa
@@ -179,6 +183,28 @@ Dos cosas que muerden si tocas esto:
 
 Bajar más componentes de shadcn necesita salida a `ui.shadcn.com` y `unlumen.com`, que la política
 de red del entorno remoto bloquea. Desde una máquina local funciona normal.
+
+**El puntero es la tercera isla.** `src/components/vendor/smooth-cursor.tsx` es el `SmoothCursor` de
+[magicui.design](https://magicui.design), y `Cursor.astro` lo monta en `BaseLayout` para toda la web.
+
+Dos decisiones que conviene no deshacer:
+
+- Se hidrata con `client:media="(hover: hover) and (pointer: fine)"`, así que en un táctil Astro **ni
+  siquiera descarga la isla**. La demo del registro resuelve esto con `hidden md:block`, pero eso
+  mide ancho de ventana y no puntero: un portátil táctil lo entiende al revés. Es la misma frontera
+  que la variante `hover-device`.
+- El `cursor: none` lo pone el componente desde su efecto, **no el CSS**. Si la isla no llega a
+  hidratarse, el puntero del sistema sigue ahí; escrito en `global.css`, un fallo de JS dejaría la
+  página sin ningún cursor.
+
+`smooth-cursor.tsx` está modificado respecto al original —paleta invertida a crema sobre filo
+`#191919`, `prefers-reduced-motion`, y dos fugas del original: un `setTimeout` por cada movimiento
+del ratón y un estado que no se leía—. La lista completa está en el comentario del archivo. Si se
+actualiza desde el registro, esos cambios se pierden y hay que volver a aplicarlos.
+
+Sobre el fondo del sitio la flecha se lee maciza; sobre las cards crema se lee como contorno, porque
+el relleno es del mismo crema. Se aguanta —el filo la sostiene— pero si algún día pesan más las
+superficies claras, la salida es invertir el relleno, no engordar el filo.
 
 **Contenido que se anima ≠ contenido que no existe.** El HTML servido tiene que traer el contenido
 aunque el JS no llegue nunca. El título (`TituloRotativo.astro`) es el patrón: una versión plana en

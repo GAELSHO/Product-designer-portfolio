@@ -1,0 +1,19 @@
+---
+import { SmoothCursor } from '@/components/vendor/smooth-cursor';
+---
+
+{/*
+  Puntero personalizado, en toda la web.
+
+  `client:media` y no `client:idle`: en un táctil no hay puntero que sustituir,
+  y con esta directiva Astro ni siquiera descarga la isla ahí —el JS se pide
+  solo si la media query encaja—. La demo de magicui hace lo mismo con un
+  `hidden md:block`, pero eso mide **ancho de ventana**, no puntero: un
+  portátil táctil o una ventana estrecha en desktop lo resuelven al revés.
+  Es la misma frontera que la variante `hover-device` de `global.css`.
+
+  El componente pone `cursor: none` desde su efecto, no desde el CSS. Si la
+  isla no llega a hidratarse, el puntero del sistema sigue donde estaba en vez
+  de desaparecer y dejar la página sin cursor.
+*/}
+<SmoothCursor client:media="(hover: hover) and (pointer: fine)" />
