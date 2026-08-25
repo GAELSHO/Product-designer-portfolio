@@ -197,14 +197,16 @@ Dos decisiones que conviene no deshacer:
   hidratarse, el puntero del sistema sigue ahí; escrito en `global.css`, un fallo de JS dejaría la
   página sin ningún cursor.
 
-`smooth-cursor.tsx` está modificado respecto al original —paleta invertida a crema sobre filo
-`#191919`, `prefers-reduced-motion`, y dos fugas del original: un `setTimeout` por cada movimiento
-del ratón y un estado que no se leía—. La lista completa está en el comentario del archivo. Si se
-actualiza desde el registro, esos cambios se pierden y hay que volver a aplicarlos.
+`smooth-cursor.tsx` está modificado respecto al original —flecha de un solo color y sin contorno,
+`prefers-reduced-motion`, y dos fugas del original: un `setTimeout` por cada movimiento del ratón y
+un estado que no se leía—. La lista completa está en el comentario del archivo. Si se actualiza
+desde el registro, esos cambios se pierden y hay que volver a aplicarlos.
 
-Sobre el fondo del sitio la flecha se lee maciza; sobre las cards crema se lee como contorno, porque
-el relleno es del mismo crema. Se aguanta —el filo la sostiene— pero si algún día pesan más las
-superficies claras, la salida es invertir el relleno, no engordar el filo.
+El color es `var(--color-ink-700)`, no un hex, y ese token es el que hace que funcione sin filo: es
+el punto de la escala que contrasta **en las dos superficies** del sitio —claro sobre el fondo,
+oscuro sobre las cards crema—. Un crema más brillante obliga a devolverle el contorno para que se
+vea sobre las cards; uno más apagado se pierde contra el fondo. Al ir por token, además, el puntero
+sigue al tema si algún día se invierte.
 
 **Contenido que se anima ≠ contenido que no existe.** El HTML servido tiene que traer el contenido
 aunque el JS no llegue nunca. El título (`TituloRotativo.astro`) es el patrón: una versión plana en

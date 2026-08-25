@@ -19,9 +19,14 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
  *
  * 1. Importa de `motion/react` en vez de `framer-motion` — es la misma
  *    librería con su nombre nuevo, y la que ya usa el dock.
- * 2. Paleta invertida: el original pinta la flecha en negro con filo blanco,
- *    pensado para fondo claro. Aquí va en crema con filo `#191919`, que es
- *    legible tanto sobre el fondo del sitio como sobre las cards crema.
+ * 2. Paleta y silueta: el original pinta la flecha en negro con un filo blanco
+ *    alrededor, pensado para fondo claro. Aquí va **sin contorno** y de un
+ *    solo color, `ink-700` —crema apagado—, que es la única pieza de la escala
+ *    que se lee en las dos superficies del sitio: clara sobre el fondo y
+ *    oscura sobre las cards crema. Va como `var(--color-ink-700)` y no como un
+ *    hex, así que sigue al tema: si algún día se invierte, el puntero también.
+ *    Lo que queda del filtro es una sombra al 8%, que es lo único que separa
+ *    la flecha del fondo ahora que no hay filo.
  * 3. Respeta `prefers-reduced-motion`: no pinta nada y deja el puntero del
  *    sistema. El componente **es** el efecto de movimiento, así que no hay
  *    versión estática que tenga sentido.
@@ -61,12 +66,7 @@ function FlechaPorDefecto() {
       <g filter="url(#filtro-cursor)">
         <path
           d="M42.6817 41.1495L27.5103 6.79925C26.7269 5.02557 24.2082 5.02558 23.3927 6.79925L7.59814 41.1495C6.75833 42.9759 8.52712 44.8902 10.4125 44.1954L24.3757 39.0496C24.8829 38.8627 25.4385 38.8627 25.9422 39.0496L39.8121 44.1954C41.6849 44.8902 43.4884 42.9759 42.6817 41.1495Z"
-          fill="#f4f2eb"
-        />
-        <path
-          d="M43.7146 40.6933L28.5431 6.34306C27.3556 3.65428 23.5772 3.69516 22.3668 6.32755L6.57226 40.6778C5.3134 43.4156 7.97238 46.298 10.803 45.2549L24.7662 40.109C25.0221 40.0147 25.2999 40.0156 25.5494 40.1082L39.4193 45.254C42.2261 46.2953 44.9254 43.4347 43.7146 40.6933Z"
-          stroke="#191919"
-          strokeWidth={2.25825}
+          fill="var(--color-ink-700)"
         />
       </g>
       <defs>
