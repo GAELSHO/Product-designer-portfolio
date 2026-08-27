@@ -8,11 +8,9 @@ import { withBase } from '@/lib/url';
  */
 
 const items: DockItem[] = [
-  { label: 'Home', href: withBase('/') },
   { label: 'Work', href: withBase('/#work') },
   { label: 'Services', href: withBase('/#services') },
-  { label: 'About', href: withBase('/#about'), separator: true },
-  { label: 'Contact', href: 'mailto:gaelsho10@gmail.com' },
+  { label: 'About', href: withBase('/#about') },
 ];
 
 export default function DockNav() {

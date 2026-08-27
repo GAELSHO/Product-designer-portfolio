@@ -18,10 +18,10 @@ import DockNav from '@/components/DockNav';
 */}
 <div class="pointer-events-none fixed inset-x-0 top-6 z-50 flex justify-center px-4">
   {/*
-    Con los items en texto el dock mide ~380px: entra entero a partir de
-    ~430px de viewport. Por debajo de eso —la mayoría de los móviles, ya con
-    cinco entradas— desborda la píldora, así que se desplaza en horizontal en
-    vez de derramarse. Recortar aquí es seguro porque en `variant="text"` el
+    Con los items en texto el dock mide ~220px: entra entero desde 320px de
+    viewport, así que el scroll horizontal de abajo no entra en juego en
+    ningún tamaño real — se queda como red de seguridad si la lista de items
+    vuelve a crecer. Recortar aquí es seguro porque en `variant="text"` el
     dock no crece en alto ni dibuja tooltip — con los iconos originales esto
     los cortaría.
   */}
