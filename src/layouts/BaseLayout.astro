@@ -2,6 +2,7 @@
 import '@/styles/global.css';
 import Dock from '@/components/Dock.astro';
 import Cursor from '@/components/Cursor.astro';
+import RedesSociales from '@/components/RedesSociales.astro';
 import { withBase } from '@/lib/url';
 
 interface Props {
@@ -44,6 +45,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <body class="bg-background flex min-h-dvh flex-col">
     <Cursor />
     <Dock />
+    <RedesSociales />
 
     <main class="mx-auto w-full max-w-6xl flex-1 px-4 pt-28 pb-16 sm:px-6 sm:pt-32">
       <slot />

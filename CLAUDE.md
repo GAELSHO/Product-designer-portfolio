@@ -208,6 +208,20 @@ oscuro sobre las cards crema—. Un crema más brillante obliga a devolverle el 
 vea sobre las cards; uno más apagado se pierde contra el fondo. Al ir por token, además, el puntero
 sigue al tema si algún día se invierte.
 
+**Los iconos de redes son fijos y no una isla.** `RedesSociales.astro` los monta en `BaseLayout`
+junto al dock y al cursor, pero es solo tres `<a>` con `target="_blank"`: no hay estado ni evento
+que gestionar, así que no necesita React. Van abajo a la derecha (`fixed bottom-6 right-4`) y no al
+costado vertical-centrado del dock: ahí el título del hero y el contenido de las cards ocupan casi
+todo el ancho en móvil, y una píldora a media altura se les habría montado encima.
+
+Los glifos no son los logotipos oficiales de Instagram/TikTok/WhatsApp —evita el problema de
+marca— sino trazos genéricos en el estilo de los iconos de `Servicios.astro`: cámara, nota musical
+y burbuja de chat. Lo que identifica cada red es el `aria-label`, no la forma del icono.
+
+El enlace de WhatsApp es un link `wa.me`, y el número va **sin** el `1` que México antepone al
+código de área en el marcado local: la guía de WhatsApp pide omitirlo en los links de clic-para-
+chatear, o el link no abre conversación.
+
 **Contenido que se anima ≠ contenido que no existe.** El HTML servido tiene que traer el contenido
 aunque el JS no llegue nunca. El título (`TituloRotativo.astro`) es el patrón: una versión plana en
 `sr-only` para buscadores y lectores de pantalla, y la parte visual con `aria-hidden` donde Astro
