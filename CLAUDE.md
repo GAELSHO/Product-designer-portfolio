@@ -310,6 +310,24 @@ escribirlo en el `.mdx` como texto normal: se reordena solo, se lee igual a cual
 puede seleccionar y Google lo indexa. Los estilos de párrafos y encabezados ya están puestos por si
 hace falta; la columna de lectura se queda en `62ch` aunque los boards ocupen el ancho entero.
 
+El cierre de AMPIA (`CierreAmpia.astro`) es ese caso ya hecho, y sirve de plantilla. Tres cosas que
+tuvo que resolver y que se repetirán en cualquier board que pase a código:
+
+- **Va una sola vez, fuera de las dos secuencias.** Un board necesita versión móvil y desktop
+  porque es una imagen; una pieza en CSS se adapta sola, así que duplicarla no tendría sentido.
+  Conserva las proporciones del board que sustituye (4:5 y 16:9) para no romper el ritmo de la pila.
+- **El radio de abajo pasa a la pieza en código.** Como ya no termina la pila un board, la regla
+  `.secuencia:has(~ .cierre) .pieza:last-child img` de `[slug].astro` deja el último board a
+  escuadra y el cierre pone el radio. Sin eso quedan dos esquinas redondeadas en mitad de la
+  columna.
+- **El tamaño de letra va en `cqw`, no en `vw`.** La pieza mide lo que la columna, que deja de
+  crecer en 1152px; con `vw` el texto seguiría creciendo en pantallas más anchas. El `clamp` lleva
+  suelo porque a 320px la frase partía en tres líneas.
+
+Ese cierre es también la única excepción a "solo Poppins": va en Inter, que es la tipografía de UI
+de AMPIA y la que lleva el board original. La carga el propio componente con un `<link>`, no
+`BaseLayout`, para que solo la descarguen las páginas que lo montan.
+
 Los estilos del cuerpo están en el `<style>` de `src/pages/work/[slug].astro`, no en el markdown:
 el `.mdx` solo debería tener contenido.
 

@@ -1,0 +1,195 @@
+---
+/**
+ * Cierre del case study de AMPIA: "Currently working on the UX/UI design".
+ *
+ * Era el último board de las dos secuencias (`11-movil` / `13-desktop`) y ahora
+ * es código. Es el caso que describe CLAUDE.md: el texto sale de la imagen y se
+ * escribe como texto normal.
+ *
+ * Lo que se gana es legibilidad, no peso: en la imagen esa frase se pintaba a
+ * ~14px en un móvil —2400px de board mostrados en 358—, y aquí son 21px. Que
+ * además se pueda seleccionar y la indexe Google viene de regalo. El peso
+ * apenas se mueve (~10KB medidos en cada viewport), porque un board casi todo
+ * negro plano ya comprimía a nada.
+ *
+ * Conserva las proporciones del board que sustituye —4:5 en móvil, 16:9 de
+ * `sm:` en adelante— para no romper el ritmo de la pila, y el radio inferior,
+ * porque es la última pieza.
+ *
+ * La barra es la paleta de AMPIA (la misma del board 06). En el board original
+ * era un degradado lineal fijo; aquí son degradados radiales que se desplazan,
+ * que es lo que pidió el diseño: el proyecto sigue vivo, que es justo lo que
+ * dice la frase.
+ */
+---
+
+{/*
+  Inter es la tipografía de UI de AMPIA (board 07/09), y es la que lleva el
+  board original — con Poppins esta pieza desentonaría con las de arriba. Va
+  aquí y no en `BaseLayout` a propósito: así solo la descargan las páginas que
+  montan este componente, en vez de todo el sitio. Es la excepción medida a la
+  regla de "solo Poppins" de CLAUDE.md, que habla del chrome del sitio.
+*/}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" />
+
+<div class="cierre">
+  <div class="contenido">
+    <p class="frase">Currently working on<br />the UX/UI design.</p>
+    <span class="barra" aria-hidden="true"></span>
+  </div>
+</div>
+
+<style>
+  /*
+    `container-type` para poder medir en `cqw`: el tamaño de letra tiene que
+    seguir al ancho de la pieza, no al del viewport. Con `vw` el texto seguiría
+    creciendo por encima de 1152px, que es donde la columna deja de crecer.
+  */
+  .cierre {
+    container-type: inline-size;
+    display: flex;
+    align-items: center;
+    aspect-ratio: 4 / 5;
+    padding-inline: 8% 6%;
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    /* Remata la pila de boards, así que el radio de abajo es suyo. */
+    border-end-start-radius: 1.5rem;
+    border-end-end-radius: 1.5rem;
+  }
+
+  @media (min-width: 40rem) {
+    .cierre {
+      aspect-ratio: 16 / 9;
+      padding-inline: 6.75% 6%;
+    }
+  }
+
+  .contenido {
+    width: 100%;
+    /* Los 420px del diseño. La barra hereda este ancho, que es lo que la deja
+       un poco más ancha que el texto, como en el board original. */
+    max-width: 26.25rem;
+  }
+
+  /*
+    Doble clase a propósito: `[slug].astro` estiliza todos los `<p>` del cuerpo
+    con `.cuerpo :global(p)`, que compila a `.cuerpo[data-astro-cid-…] p` —más
+    específico que un `.frase` scopeado a secas—. Con `.cierre .frase` gana esto
+    y la frase no hereda el `max-width: 62ch`, el color `ink-700` ni el margen.
+  */
+  .cierre .frase {
+    margin: 0;
+    max-width: none;
+    color: inherit;
+    /* El suelo del clamp es lo que evita que la frase parta en tres líneas en
+       un móvil de 320px, donde la pieza mide 288px. */
+    font-size: clamp(1.25rem, 7cqw, 1.75rem);
+    font-weight: 300;
+    line-height: 1.3;
+    letter-spacing: -0.036em;
+  }
+
+  @media (min-width: 40rem) {
+    .cierre .frase {
+      font-size: clamp(1.75rem, 3.3cqw, 2.25rem);
+      line-height: 1.28;
+      letter-spacing: -0.039em;
+    }
+  }
+
+  .cierre .barra {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 11px;
+    margin-top: 2.375rem;
+    border-radius: 999px;
+    /* Recorta el brillo de `::after`, que se mueve de lado a lado. */
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 0% 50%, #75f268 0%, transparent 45%),
+      radial-gradient(circle at 30% 50%, #66acd9 0%, transparent 45%),
+      radial-gradient(circle at 55% 50%, #026be4 0%, transparent 45%),
+      radial-gradient(circle at 80% 50%, #143980 0%, transparent 45%),
+      #0e1a28;
+    background-size: 180% 250%;
+    animation:
+      barraViva 8s ease-in-out infinite alternate,
+      barraEscala 6s ease-in-out infinite alternate;
+  }
+
+  @media (min-width: 40rem) {
+    .cierre .barra {
+      height: 14px;
+      margin-top: 3.375rem;
+    }
+  }
+
+  /* Brillo suave que recorre la barra. */
+  .cierre .barra::after {
+    content: '';
+    position: absolute;
+    width: 70%;
+    height: 250%;
+    top: -75%;
+    left: -20%;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.08);
+    filter: blur(12px);
+    animation: barraBrillo 5s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  @keyframes barraViva {
+    0% {
+      background-position: 0% 50%, 20% 50%, 40% 50%, 60% 50%;
+    }
+    25% {
+      background-position: 20% 30%, 40% 70%, 60% 30%, 80% 70%;
+    }
+    50% {
+      background-position: 40% 70%, 60% 30%, 80% 70%, 100% 30%;
+    }
+    75% {
+      background-position: 60% 40%, 80% 60%, 100% 40%, 20% 60%;
+    }
+    100% {
+      background-position: 80% 60%, 100% 40%, 20% 70%, 40% 30%;
+    }
+  }
+
+  @keyframes barraEscala {
+    0%,
+    100% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(1.015);
+    }
+  }
+
+  @keyframes barraBrillo {
+    0% {
+      left: -25%;
+      transform: scale(0.8);
+    }
+    100% {
+      left: 65%;
+      transform: scale(1.2);
+    }
+  }
+
+  /*
+    `global.css` ya recorta las duraciones a 0.01ms con reduced-motion, que en
+    una animación `infinite` deja la barra parpadeando. Aquí se apaga del todo:
+    el degradado se queda quieto y sigue leyéndose igual.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .cierre .barra,
+    .cierre .barra::after {
+      animation: none;
+    }
+  }
+</style>

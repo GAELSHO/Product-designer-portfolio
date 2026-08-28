@@ -169,6 +169,17 @@ const descripcionMeta = `${subtitulo}. ${tags.join(', ')}.`;
   }
 
   /*
+    Si tras las secuencias viene un cierre en código, la pila no termina en un
+    board: el radio de abajo pasa a esa pieza y el último board se queda a
+    escuadra para que las dos se lean como una sola columna continua. El `~` y
+    no el `+` porque hay dos secuencias y el cierre solo sigue a la segunda.
+  */
+  .cuerpo :global(.secuencia:has(~ .cierre) .pieza:last-child img) {
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  /*
     Las dos secuencias completas: solo se muestra una. La otra queda en
     `display:none`, y como sus imágenes son `loading="lazy"` nunca entran en
     viewport, así que el navegador no las descarga.

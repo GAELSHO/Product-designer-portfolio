@@ -12,6 +12,7 @@ anio: '2026'
 ---
 
 import Board from '@/components/Board.astro';
+import CierreAmpia from '@/components/CierreAmpia.astro';
 
 import m01 from './01-movil.webp';
 import m02 from './02-movil.webp';
@@ -23,7 +24,6 @@ import m07 from './07-movil.webp';
 import m08 from './08-movil.webp';
 import m09 from './09-movil.webp';
 import m10 from './10-movil.webp';
-import m11 from './11-movil.webp';
 
 import d01 from './01-desktop.webp';
 import d02 from './02-desktop.webp';
@@ -37,13 +37,16 @@ import d09 from './09-desktop.webp';
 import d10 from './10-desktop.webp';
 import d11 from './11-desktop.webp';
 import d12 from './12-desktop.webp';
-import d13 from './13-desktop.webp';
 
 {/*
   Dos secuencias completas, no una con dos recortes: las versiones no van 1:1.
-  Móvil son 11 boards y desktop 13: en móvil la tipografía es un solo board alto
+  Móvil son 10 boards y desktop 12: en móvil la tipografía es un solo board alto
   con Space Grotesk e Inter juntos, y el "by EVCON" va en el mismo board que el
   espectacular. En desktop cada una de esas va aparte.
+
+  El cierre va una sola vez y fuera de las dos: no es una imagen sino
+  `CierreAmpia.astro`, que se adapta a los dos anchos con CSS y no necesita una
+  versión por viewport.
 
   Solo se descarga la secuencia que se ve — la otra está en `display:none` y sus
   imágenes son `loading="lazy"`, así que nunca entran en viewport. Está medido.
@@ -64,7 +67,6 @@ import d13 from './13-desktop.webp';
   <Board movil={m08} alt="Signage on a concrete building facade: a wide gradient panel reading 'Powering the future' with the AMPIA mark" />
   <Board movil={m09} alt="The AMPIA app icon, the monogram in white over a blue and green gradient, and the same icon in place on an iPhone home screen" />
   <Board movil={m10} alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent. Below, a billboard in Colima, Mexico reading 'Tu recibo se pondrá a dieta'" />
-  <Board movil={m11} alt="Currently working on the UX/UI design" />
 </div>
 
 <div class="secuencia secuencia-desktop">
@@ -80,5 +82,6 @@ import d13 from './13-desktop.webp';
   <Board desktop={d10} alt="The AMPIA app icon, the monogram in white over a blue and green gradient, and the same icon in place on an iPhone home screen" />
   <Board desktop={d11} alt="AMPIA by EVCON. The system extends to the parent brand: advertising for EVCON keeps both identities visually consistent" />
   <Board desktop={d12} alt="A billboard in Colima, Mexico reading 'Tu recibo se pondra a dieta', with an EVCON utility bill wrapped in a measuring tape" />
-  <Board desktop={d13} alt="Currently working on the UX/UI design" />
 </div>
+
+<CierreAmpia />
