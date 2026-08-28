@@ -13,86 +13,52 @@ const proyectos = (await getCollection('work')).sort((a, b) => a.data.orden - b.
 <BaseLayout title="Gael SHO | Brand Designer">
   {/* El hero ocupa casi toda la primera pantalla; la card destacada asoma por
       debajo para que se note que hay más contenido. El `svh` (y no `vh`) es
-      para que en móvil cuente el alto real con la barra del navegador.
+      para que en móvil cuente el alto real con la barra del navegador. */}
+  <header class="flex min-h-[68svh] flex-col items-center justify-center sm:min-h-[64svh]">
+    <TituloRotativo />
 
-      `sticky` con el mismo `top` que el `pt` de <main>: el hero se queda
-      fijo bajo el dock mientras las cards de `#work`, que vienen después en
-      el documento, suben por encima y lo tapan —cubren su propio ancho, que
-      es opaco— en vez de simplemente empujarlo fuera de pantalla. Sin el
-      `top` a juego se colaría bajo el dock al quedar "pegado", en vez de
-      quedarse justo donde ya se ve hoy.
+    {/* El salto va en el markup y no vía `max-width`: dónde parte una caja de
+        ancho fijo depende de la métrica de la fuente, y con Poppins cargando
+        tarde el corte bailaba. En móvil el `<br>` se apaga y envuelve solo. */}
+    {/* Tamaño fluido, como el `<h1>`: con un tamaño fijo la descripción crecía
+        en proporción al bajar de ancho (en móvil llegaba a 0.67 del título, y
+        en la referencia es ~0.33). El `2.05vw` es 0.33 × el `6.2vw` del título,
+        así que la proporción se mantiene constante mientras ambos escalan.
+        El suelo de 0.875rem es legibilidad: a 390px de ancho el título mide
+        24px y un 0.33 de eso serían 8px, ilegibles. Por eso en móvil la
+        proporción no se puede respetar.
 
-      El envoltorio de abajo es lo que decide cuándo se despega: un elemento
-      `sticky` queda "pegado" mientras quepa dentro de la caja de su *padre*,
-      no de la suya propia. Sin este `<div>`, el padre sería `<main>` —que
-      mide toda la página, cards, Services y About incluidos—, así que el
-      hero se quedaría pegado en ese mismo punto de pantalla durante *todo*
-      el scroll, y donde ninguna card opaca lo tapara (los huecos de
-      Services) se colaba por detrás — así se vio en producción.
+        El tope de ancho en móvil va en % y no en `ch`: ahí el título ocupa casi
+        todo el ancho disponible, así que un 86% del contenedor deja la
+        descripción siempre más corta. En `ch` dependería de la métrica de
+        Poppins y se pasaba de largo. */}
+    <p
+      class="text-ink-700 mt-5 max-w-[86%] text-center text-[clamp(0.875rem,2.05vw,1.5rem)] font-light text-pretty sm:mt-6 sm:max-w-[80ch]"
+    >
+      Helping startups and businesses build everything<br class="hidden sm:inline" /> from identity
+      to interface.
+    </p>
 
-      El `<div>` necesita una **altura explícita** de sobra —el alto del
-      hero más un tramo extra— para que se quede pegado ese tramo extra y
-      luego se suelte, ya tapado por la card. Un `pb-*` que llegue al mismo
-      alto total no sirve para lo mismo: verificado en navegador, con
-      `padding-bottom` en vez de `height` el `sticky` no llega a pegarse en
-      ningún punto del scroll — Chromium no calcula el tramo de anclaje a
-      partir de una altura que sale del padding en vez de la propiedad
-      `height`.
-
-      Ese tramo extra es también cuánto se retrasa la primera card en
-      aparecer: los dos salen del mismo número, porque es el mismo scroll el
-      que despega al hero y el que sube a la card. `40svh` es el punto medio
-      —bastante para que a la card le dé tiempo de taparlo antes de que se
-      suelte, poco para no demorar la entrada de la card—. Los `108svh`/
-      `104svh` son el `min-h` del hero (`68svh`/`64svh`) más esos `40svh`; si
-      el hero cambia de alto, este número tiene que moverse con él. */}
-  <div class="relative h-[108svh] sm:h-[104svh]">
-    <header class="sticky top-28 flex min-h-[68svh] flex-col items-center justify-center sm:top-32 sm:min-h-[64svh]">
-      <TituloRotativo />
-
-      {/* El salto va en el markup y no vía `max-width`: dónde parte una caja de
-          ancho fijo depende de la métrica de la fuente, y con Poppins cargando
-          tarde el corte bailaba. En móvil el `<br>` se apaga y envuelve solo. */}
-      {/* Tamaño fluido, como el `<h1>`: con un tamaño fijo la descripción crecía
-          en proporción al bajar de ancho (en móvil llegaba a 0.67 del título, y
-          en la referencia es ~0.33). El `2.05vw` es 0.33 × el `6.2vw` del título,
-          así que la proporción se mantiene constante mientras ambos escalan.
-          El suelo de 0.875rem es legibilidad: a 390px de ancho el título mide
-          24px y un 0.33 de eso serían 8px, ilegibles. Por eso en móvil la
-          proporción no se puede respetar.
-
-          El tope de ancho en móvil va en % y no en `ch`: ahí el título ocupa casi
-          todo el ancho disponible, así que un 86% del contenedor deja la
-          descripción siempre más corta. En `ch` dependería de la métrica de
-          Poppins y se pasaba de largo. */}
-      <p
-        class="text-ink-700 mt-5 max-w-[86%] text-center text-[clamp(0.875rem,2.05vw,1.5rem)] font-light text-pretty sm:mt-6 sm:max-w-[80ch]"
+    {/* La flecha es el indicador de scroll, así que además de señalar, lleva. */}
+    <a
+      href={withBase('/#work')}
+      class="text-ink-700 hover:text-ink-950 mt-14 transition-colors sm:mt-20"
+      aria-label="Skip to selected work"
+    >
+      <svg
+        class="size-8 sm:size-10"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
       >
-        Helping startups and businesses build everything<br class="hidden sm:inline" /> from identity
-        to interface.
-      </p>
-
-      {/* La flecha es el indicador de scroll, así que además de señalar, lleva. */}
-      <a
-        href={withBase('/#work')}
-        class="text-ink-700 hover:text-ink-950 mt-14 transition-colors sm:mt-20"
-        aria-label="Skip to selected work"
-      >
-        <svg
-          class="size-8 sm:size-10"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.25"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m5 9 7 7 7-7" />
-        </svg>
-      </a>
-    </header>
-  </div>
+        <path d="m5 9 7 7 7-7" />
+      </svg>
+    </a>
+  </header>
 
   <section id="work" class="mt-16 scroll-mt-28">
     <h2 class="sr-only">Selected work</h2>
