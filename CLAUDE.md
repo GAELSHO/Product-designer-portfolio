@@ -214,9 +214,10 @@ que gestionar, así que no necesita React. Van abajo a la derecha (`fixed bottom
 costado vertical-centrado del dock: ahí el título del hero y el contenido de las cards ocupan casi
 todo el ancho en móvil, y una píldora a media altura se les habría montado encima.
 
-Los glifos no son los logotipos oficiales de Instagram/TikTok/WhatsApp —evita el problema de
-marca— sino trazos genéricos en el estilo de los iconos de `Servicios.astro`: cámara, nota musical
-y burbuja de chat. Lo que identifica cada red es el `aria-label`, no la forma del icono.
+Los glifos son los logotipos oficiales de Instagram, TikTok y WhatsApp, en rutas SVG completas —no
+los iconos de línea del resto del sitio— pero en un solo color vía `currentColor`, para no romper
+la paleta monocroma. El `aria-label` sigue siendo lo que identifica cada red para lectores de
+pantalla, no la forma del icono.
 
 El enlace de WhatsApp es un link `wa.me`, y el número va **sin** el `1` que México antepone al
 código de área en el marcado local: la guía de WhatsApp pide omitirlo en los links de clic-para-
