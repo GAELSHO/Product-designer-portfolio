@@ -66,11 +66,16 @@
     }
   }
 
+  /*
+    `fit-content` en vez de un ancho fijo: la caja se encoge hasta la línea más
+    larga de la frase ("Currently working on"), y como la barra va al 100% de
+    esta caja, mide exactamente lo mismo que el texto a cualquier tamaño. Con
+    un ancho en px habría que reajustarlo cada vez que cambie la frase o el
+    cuerpo de letra. El `max-width` es el tope por si la línea no cupiera.
+  */
   .contenido {
-    width: 100%;
-    /* Los 420px del diseño. La barra hereda este ancho, que es lo que la deja
-       un poco más ancha que el texto, como en el board original. */
-    max-width: 26.25rem;
+    width: fit-content;
+    max-width: 100%;
   }
 
   /*
@@ -104,7 +109,7 @@
     position: relative;
     width: 100%;
     height: 11px;
-    margin-top: 2.375rem;
+    margin-top: 1.5rem;
     border-radius: 999px;
     /* Recorta el brillo de `::after`, que se mueve de lado a lado. */
     overflow: hidden;
@@ -123,7 +128,7 @@
   @media (min-width: 40rem) {
     .cierre .barra {
       height: 14px;
-      margin-top: 3.375rem;
+      margin-top: 2rem;
     }
   }
 
