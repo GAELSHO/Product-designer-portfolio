@@ -13,8 +13,17 @@ const proyectos = (await getCollection('work')).sort((a, b) => a.data.orden - b.
 <BaseLayout title="Gael SHO | Brand Designer">
   {/* El hero ocupa casi toda la primera pantalla; la card destacada asoma por
       debajo para que se note que hay más contenido. El `svh` (y no `vh`) es
-      para que en móvil cuente el alto real con la barra del navegador. */}
-  <header class="flex min-h-[68svh] flex-col items-center justify-center sm:min-h-[64svh]">
+      para que en móvil cuente el alto real con la barra del navegador.
+
+      `sticky` con el mismo `top` que el `pt` de <main>: el hero se queda
+      fijo bajo el dock mientras las cards de `#work`, que vienen después en
+      el documento, suben por encima y lo tapan —cubren su propio ancho, que
+      es opaco— en vez de simplemente empujarlo fuera de pantalla. Sin el
+      `top` a juego se colaría bajo el dock al quedar "pegado", en vez de
+      quedarse justo donde ya se ve hoy. Se despega solo cuando su propia
+      altura (`min-h`) termina de pasar, así que el tramo pegado dura lo que
+      mide el hero. */}
+  <header class="sticky top-28 flex min-h-[68svh] flex-col items-center justify-center sm:top-32 sm:min-h-[64svh]">
     <TituloRotativo />
 
     {/* El salto va en el markup y no vía `max-width`: dónde parte una caja de
