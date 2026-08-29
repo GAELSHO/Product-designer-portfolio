@@ -31,8 +31,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/*
+      Una sola petición para las dos familias. Poppins es la del sitio; Inter
+      solo la usan las piezas en código del case study de AMPIA, pero va aquí y
+      no en esos componentes por dos razones: un `<link>` en el `<body>` bloquea
+      el parseo del resto del documento, y repetirlo por componente multiplica
+      ese bloqueo. Declarar la familia no la descarga —el navegador solo pide
+      los woff2 de las fuentes que la página llega a pintar—, así que las
+      páginas que no usan Inter no pagan nada por tenerla en la URL.
+    */}
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Inter:wght@300;600&display=swap"
       rel="stylesheet"
     />
 

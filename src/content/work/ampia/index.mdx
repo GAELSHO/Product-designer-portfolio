@@ -13,9 +13,11 @@ anio: '2026'
 
 import Board from '@/components/Board.astro';
 import CierreAmpia from '@/components/CierreAmpia.astro';
+import IntroAmpia from '@/components/IntroAmpia.astro';
+
+import mockupApp from './AMPIA app mockup.png';
 
 import m01 from './01-movil.webp';
-import m02 from './02-movil.webp';
 import m03 from './03-movil.webp';
 import m04 from './04-movil.webp';
 import m05 from './05-movil.webp';
@@ -26,7 +28,6 @@ import m09 from './09-movil.webp';
 import m10 from './10-movil.webp';
 
 import d01 from './01-desktop.webp';
-import d02 from './02-desktop.webp';
 import d03 from './03-desktop.webp';
 import d04 from './04-desktop.webp';
 import d05 from './05-desktop.webp';
@@ -44,9 +45,11 @@ import d12 from './12-desktop.webp';
   con Space Grotesk e Inter juntos, y el "by EVCON" va en el mismo board que el
   espectacular. En desktop cada una de esas va aparte.
 
-  El cierre va una sola vez y fuera de las dos: no es una imagen sino
-  `CierreAmpia.astro`, que se adapta a los dos anchos con CSS y no necesita una
-  versión por viewport.
+  Dos de las piezas están en código, no en imagen. `CierreAmpia` va una sola vez
+  y fuera de las dos secuencias, porque remata la pila y se puede sacar de ahí.
+  `IntroAmpia` no: cae en mitad de la pila, así que va dentro de las dos como
+  un board más. Se adapta sola con CSS, así que las dos copias son idénticas y
+  el navegador solo pinta —y solo descarga— la de su breakpoint.
 
   Solo se descarga la secuencia que se ve — la otra está en `display:none` y sus
   imágenes son `loading="lazy"`, así que nunca entran en viewport. Está medido.
@@ -58,7 +61,7 @@ import d12 from './12-desktop.webp';
 
 <div class="secuencia secuencia-movil">
   <Board movil={m01} alt="AMPIA charging column under a solar canopy in a parking lot, its screen showing the brand mark and the line 'Powering the future'" />
-  <Board movil={m02} alt="Branding and UX design for AMPIA, a network of EV charging stations across Mexico, and a sub-brand of the energy company EVCON. Below, an iPhone home screen with the AMPIA app icon" />
+  <IntroAmpia mockup={mockupApp} />
   <Board movil={m03} alt="The AMPIA wordmark in white over a blue and green gradient" />
   <Board movil={m04} alt="Inspired by the curves of the charging cables and the charging cycle: continuous lines that flow and close, like energy itself. Beside the text, a charging unit carrying the mark" />
   <Board movil={m05} alt="Construction of the AMPIA monogram: the rounded A built from continuous strokes over its geometric guides" />
@@ -71,7 +74,7 @@ import d12 from './12-desktop.webp';
 
 <div class="secuencia secuencia-desktop">
   <Board desktop={d01} alt="AMPIA charging column under a solar canopy in a parking lot, its screen showing the brand mark and the line 'Powering the future'" />
-  <Board desktop={d02} alt="Branding and UX design for AMPIA, a network of EV charging stations across Mexico, and a sub-brand of the energy company EVCON. Beside the text, an iPhone home screen with the AMPIA app icon" />
+  <IntroAmpia mockup={mockupApp} />
   <Board desktop={d03} alt="The AMPIA wordmark in white over a blue and green gradient" />
   <Board desktop={d04} alt="Inspired by the curves of the charging cables and the charging cycle: continuous lines that flow and close, like energy itself. Beside the text, a charging unit carrying the mark" />
   <Board desktop={d05} alt="Construction of the AMPIA monogram: the rounded A built from continuous strokes over its geometric guides" />

@@ -1,0 +1,176 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BarraAmpia from '@/components/BarraAmpia.astro';
+
+/**
+ * Segunda pieza del case study de AMPIA: la descripción del proyecto junto al
+ * mockup del teléfono.
+ *
+ * Era el board 02 de las dos secuencias. Como el cierre, el texto sale de la
+ * imagen y se escribe como texto: en el board de móvil esa frase se pintaba a
+ * ~11px —2400px mostrados en 358—, y aquí no baja de 14px. Lo que sigue siendo
+ * imagen es solo el mockup, que es lo único que no se puede componer en CSS.
+ *
+ * El PNG que subió el cliente está recortado más cerrado que el que se usó para
+ * montar el board, así que la reconstrucción no puede ser pixel a pixel: las
+ * proporciones del texto y de la barra sí salen medidas del board original, y
+ * la colocación del teléfono está ajustada a ojo contra él.
+ */
+interface Props {
+  /** El mockup del teléfono, importado desde el `.mdx` como los demás boards. */
+  mockup: ImageMetadata;
+}
+
+const { mockup } = Astro.props;
+
+// El teléfono se sale del panel por la derecha y por abajo, así que se pinta
+// más ancho que la columna. Estos son los anchos en los que se muestra de
+// verdad —no el del panel—, que es lo que decide qué variante pide el navegador.
+const sizes = '(min-width: 72rem) 700px, (min-width: 40rem) 62vw, 118vw';
+---
+
+<div class="intro">
+  <div class="contenido">
+    <p class="frase">
+      <strong>Branding</strong> and <strong>UX design</strong> for AMPIA,<br />
+      a network of <strong>EV charging stations</strong><br />
+      across Mexico, and a sub-brand<br />
+      of the energy company EVCON.
+    </p>
+    <BarraAmpia />
+  </div>
+
+  {/*
+    El mockup es decorativo: lo que dice esta pieza ya está en el texto de al
+    lado, así que un `alt` lo repetiría para quien use lector de pantalla.
+  */}
+  <Image class="telefono" src={mockup} alt="" widths={[420, 640, 900, 1200, 1600]} sizes={sizes} loading="lazy" />
+</div>
+
+<style>
+  /*
+    `container-type` para poder medir en `cqw`: los tamaños siguen al ancho de
+    la pieza, no al del viewport, que es lo que la hace verse igual a cualquier
+    ancho de columna. Y `overflow: hidden` porque el teléfono se sale por dos
+    lados a propósito.
+  */
+  .intro {
+    container-type: inline-size;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: #08090c;
+    color: #fff;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  @media (min-width: 40rem) {
+    .intro {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  /*
+    En móvil el texto va arriba y el teléfono debajo; en desktop el texto se
+    centra a la izquierda y el teléfono ocupa la mitad derecha. Los porcentajes
+    salen medidos del board original.
+  */
+  .contenido {
+    position: absolute;
+    z-index: 1;
+    left: 11.4%;
+    top: 10%;
+    width: 88%;
+  }
+
+  @media (min-width: 40rem) {
+    .contenido {
+      left: 8.07%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 45%;
+    }
+  }
+
+  /*
+    Doble clase: `[slug].astro` estiliza todos los `<p>` del cuerpo con
+    `.cuerpo :global(p)`, que es más específico que un `.frase` scopeado a
+    secas. Con `.intro .frase` gana esto y no hereda el `max-width: 62ch`, el
+    color `ink-700` ni el margen.
+  */
+  .intro .frase {
+    margin: 0;
+    max-width: none;
+    color: inherit;
+    /* El suelo del clamp es lo que evita que la línea más larga ("Branding and
+       UX design for AMPIA,") parta en dos en un móvil de 320px. */
+    font-size: clamp(0.875rem, 4.4cqw, 1.125rem);
+    font-weight: 300;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 40rem) {
+    .intro .frase {
+      font-size: clamp(1.125rem, 2cqw, 1.5rem);
+      line-height: 1.55;
+    }
+  }
+
+  .intro .frase strong {
+    font-weight: 600;
+  }
+
+  /* La barra es un acento corto, no el ancho del texto: así va en el board. */
+  .intro :global(.barra) {
+    --barra-ancho: 38.4cqw;
+    --barra-alto: max(4px, 1.4cqw);
+    margin-top: 1.25rem;
+  }
+
+  @media (min-width: 40rem) {
+    .intro :global(.barra) {
+      --barra-ancho: 23.65cqw;
+      --barra-alto: max(6px, 0.9cqw);
+      margin-top: 1.75rem;
+    }
+  }
+
+  /*
+    El teléfono se ancla arriba-izquierda y se sale por la derecha y por abajo,
+    igual que en el board. El ancho va en `cqw` para que el recorte sea el mismo
+    a cualquier ancho de columna.
+
+    La escala sale de medir el icono de AMPIA en el board original y en el
+    render hasta que coinciden (17.9% del panel en desktop, 32% en móvil). El
+    `left` negativo en móvil no saca el teléfono de sitio: el PNG lleva un 11%
+    de transparencia a su izquierda, así que el cuerpo empieza bastante más
+    adentro que el borde de la imagen.
+
+    Lo que no se puede copiar del board es el `top` de móvil. Allí el texto se
+    pintaba a ~11px y cabía en la parte de arriba con sitio de sobra; aquí mide
+    16px, así que el bloque de texto es más alto y el teléfono tiene que
+    empezar más abajo (43% en vez del 34% del board) o se le monta encima. Es
+    el precio de que la frase se lea, y se paga aquí.
+  */
+  .intro .telefono {
+    position: absolute;
+    left: -9.6%;
+    top: 43%;
+    width: 130cqw;
+    height: auto;
+    /* `image.layout: 'constrained'` le pone `max-width: 100%`, que recortaba
+       el teléfono al ancho del panel justo cuando lo que se busca es que se
+       salga por la derecha. */
+    max-width: none;
+  }
+
+  @media (min-width: 40rem) {
+    .intro .telefono {
+      left: 48.7%;
+      top: 18.7%;
+      width: 55.4cqw;
+    }
+  }
+</style>

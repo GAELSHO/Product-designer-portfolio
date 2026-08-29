@@ -1,0 +1,108 @@
+---
+/**
+ * La barra de degradado de AMPIA, compartida por las piezas del case study que
+ * están en código (`IntroAmpia`, `CierreAmpia`).
+ *
+ * Son los cinco colores de la paleta (board 06) en degradados radiales que se
+ * desplazan. En los boards originales era un degradado lineal fijo; aquí se
+ * mueve, que es lo que pidió el diseño del cierre y lo que mantiene las dos
+ * piezas hablando el mismo idioma.
+ *
+ * El tamaño lo pone quien la monta, con dos custom properties, porque no es el
+ * mismo en las dos piezas: en el cierre la barra mide lo que el texto, y en la
+ * intro es un acento más corto y más fino.
+ *
+ *   --barra-ancho  (default 100%, o sea el ancho de su contenedor)
+ *   --barra-alto   (default 14px)
+ */
+---
+
+<span class="barra" aria-hidden="true"></span>
+
+<style>
+  .barra {
+    display: block;
+    position: relative;
+    width: var(--barra-ancho, 100%);
+    height: var(--barra-alto, 14px);
+    border-radius: 999px;
+    /* Recorta el brillo de `::after`, que se mueve de lado a lado. */
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 0% 50%, #75f268 0%, transparent 45%),
+      radial-gradient(circle at 30% 50%, #66acd9 0%, transparent 45%),
+      radial-gradient(circle at 55% 50%, #026be4 0%, transparent 45%),
+      radial-gradient(circle at 80% 50%, #143980 0%, transparent 45%),
+      #0e1a28;
+    background-size: 180% 250%;
+    animation:
+      barraViva 8s ease-in-out infinite alternate,
+      barraEscala 6s ease-in-out infinite alternate;
+  }
+
+  /* Brillo suave que la recorre. */
+  .barra::after {
+    content: '';
+    position: absolute;
+    width: 70%;
+    height: 250%;
+    top: -75%;
+    left: -20%;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.08);
+    filter: blur(12px);
+    animation: barraBrillo 5s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  @keyframes barraViva {
+    0% {
+      background-position: 0% 50%, 20% 50%, 40% 50%, 60% 50%;
+    }
+    25% {
+      background-position: 20% 30%, 40% 70%, 60% 30%, 80% 70%;
+    }
+    50% {
+      background-position: 40% 70%, 60% 30%, 80% 70%, 100% 30%;
+    }
+    75% {
+      background-position: 60% 40%, 80% 60%, 100% 40%, 20% 60%;
+    }
+    100% {
+      background-position: 80% 60%, 100% 40%, 20% 70%, 40% 30%;
+    }
+  }
+
+  @keyframes barraEscala {
+    0%,
+    100% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(1.015);
+    }
+  }
+
+  @keyframes barraBrillo {
+    0% {
+      left: -25%;
+      transform: scale(0.8);
+    }
+    100% {
+      left: 65%;
+      transform: scale(1.2);
+    }
+  }
+
+  /*
+    `global.css` recorta las duraciones a 0.01ms con reduced-motion, que en una
+    animación `infinite` deja la barra parpadeando. Aquí se apaga del todo: el
+    degradado se queda quieto y se lee igual.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .barra,
+    .barra::after {
+      animation: none;
+    }
+  }
+</style>

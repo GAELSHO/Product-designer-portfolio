@@ -310,12 +310,23 @@ escribirlo en el `.mdx` como texto normal: se reordena solo, se lee igual a cual
 puede seleccionar y Google lo indexa. Los estilos de párrafos y encabezados ya están puestos por si
 hace falta; la columna de lectura se queda en `62ch` aunque los boards ocupen el ancho entero.
 
-El cierre de AMPIA (`CierreAmpia.astro`) es ese caso ya hecho, y sirve de plantilla. Tres cosas que
-tuvo que resolver y que se repetirán en cualquier board que pase a código:
+AMPIA ya tiene dos piezas así, y sirven de plantilla: `IntroAmpia.astro` (era el board 02, texto
+más el mockup del teléfono) y `CierreAmpia.astro` (era el último). Comparten `BarraAmpia.astro`, la
+barra de degradado, que se dimensiona desde fuera con `--barra-ancho` / `--barra-alto` porque no
+mide lo mismo en las dos. Cosas que tuvieron que resolver y que se repetirán:
 
-- **Va una sola vez, fuera de las dos secuencias.** Un board necesita versión móvil y desktop
-  porque es una imagen; una pieza en CSS se adapta sola, así que duplicarla no tendría sentido.
-  Conserva las proporciones del board que sustituye (4:5 y 16:9) para no romper el ritmo de la pila.
+- **Dónde va depende de si remata la pila.** `CierreAmpia` va una sola vez y fuera de las dos
+  secuencias, porque es la última pieza y se puede sacar de ahí. `IntroAmpia` cae en mitad de la
+  pila, así que va dentro de las dos secuencias como un board más; se adapta sola con CSS, las dos
+  copias son idénticas y el navegador solo pinta —y solo descarga— la de su breakpoint. Las dos
+  conservan las proporciones del board que sustituyen (4:5 y 16:9) para no romper el ritmo.
+- **Agrandar el texto mueve la composición.** En los boards de móvil el texto se pintaba a 11-14px
+  porque era una imagen de 2400px mostrada en 358. Al escribirlo como texto sube a 16-21px, y eso
+  obliga a recolocar lo demás: en `IntroAmpia` el teléfono tuvo que bajar del 34% del board al 43%
+  o se montaba sobre la frase. No se puede copiar el board coordenada a coordenada.
+- **Una imagen que se sale del panel necesita `max-width: none`.** `image.layout: 'constrained'`
+  le mete `max-width: 100%` a todo lo que pasa por `<Image>`, que recorta justo lo que se busca
+  cuando una pieza tiene que sangrar por un lado.
 - **El radio de abajo pasa a la pieza en código.** Como ya no termina la pila un board, la regla
   `.secuencia:has(~ .cierre) .pieza:last-child img` de `[slug].astro` deja el último board a
   escuadra y el cierre pone el radio. Sin eso quedan dos esquinas redondeadas en mitad de la
@@ -324,9 +335,12 @@ tuvo que resolver y que se repetirán en cualquier board que pase a código:
   crecer en 1152px; con `vw` el texto seguiría creciendo en pantallas más anchas. El `clamp` lleva
   suelo porque a 320px la frase partía en tres líneas.
 
-Ese cierre es también la única excepción a "solo Poppins": va en Inter, que es la tipografía de UI
-de AMPIA y la que lleva el board original. La carga el propio componente con un `<link>`, no
-`BaseLayout`, para que solo la descarguen las páginas que lo montan.
+Esas piezas son también la única excepción a "solo Poppins": van en Inter, que es la tipografía de
+UI de AMPIA y la que llevan los boards originales. La carga `BaseLayout` en la misma petición que
+Poppins, no cada componente con su `<link>`: un `<link rel="stylesheet">` en el `<body>` bloquea el
+parseo del resto del documento, y repetido por componente multiplica ese bloqueo. Declarar la
+familia no la descarga —el navegador solo pide los woff2 que la página llega a pintar—, así que las
+páginas sin Inter no pagan nada por tenerla en la URL.
 
 Los estilos del cuerpo están en el `<style>` de `src/pages/work/[slug].astro`, no en el markdown:
 el `.mdx` solo debería tener contenido.
