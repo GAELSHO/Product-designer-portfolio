@@ -7,21 +7,26 @@ import type { ImageMetadata } from 'astro';
  * marca. Era el board 03 de las dos secuencias.
  *
  * Aquí lo que sale de la imagen no es texto sino el fondo: el board era un
- * archivo de 5120px que se descargaba entero para pintar un degradado, y en
- * código son unas líneas de CSS que además se mueven. Lo único que sigue siendo
- * imagen es el logotipo, que es una marca y no se compone con CSS.
+ * archivo de 5120px que se descargaba entero para pintar un degradado. Lo único
+ * que sigue siendo imagen es el logotipo, que es una marca.
  *
  * El fondo va en tres niveles, y el orden importa:
  *
- *   1. `.marca`            el eje y las dos esquinas — la identidad, fija
- *   2. `::before`/`::after` los brillos que giran — el movimiento
- *   3. `.esquinas`          las dos esquinas otra vez, por encima
+ *   1. `.marca`      el eje diagonal — la identidad del board, fija
+ *   2. `.brillos`    cinco manchas de color, cada una con su órbita
+ *   3. `.esquinas`   las dos esquinas repintadas por encima
  *
- * El tercer nivel existe porque sin él los brillos se comen la identidad: al
- * girar, el verde acababa en la esquina de arriba a la derecha —que es la del
- * azul noche— y el panel entero viraba a verde azulado. Repintar las dos
- * esquinas encima deja que el movimiento se vea en el centro, que es donde
- * tiene sitio, sin tocar lo que define la marca.
+ * El nivel 3 existe porque las manchas, al orbitar, pasan por todas partes: sin
+ * él el verde acababa en la esquina del azul noche y el panel viraba entero.
+ * Repintar las esquinas encima deja el movimiento donde tiene sitio —el centro—
+ * sin tocar lo que define la marca. Lleva `z-index` explícito y no orden en el
+ * DOM: un `::after` se inserta como último hijo y se pintaría por encima.
+ *
+ * **Los colores son los cinco de la paleta y nada más.** Se probaron azules
+ * pálidos, casi blancos, para dar luz: sobre el azul noche de la esquina
+ * superior derecha no dan luz sino un gris sucio, porque mezclar un tono
+ * desaturado con uno oscuro baja el croma de los dos. Todo lo que se mueve va
+ * saturado; la luz la pone el color, no el blanco.
  *
  * Proporciones medidas del board original: el logotipo ocupa el 34.5% del ancho
  * del panel en desktop y el 55.3% en móvil, centrado en ambos.
@@ -40,7 +45,16 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
 ---
 
 <div class="marca">
+  <div class="brillos" aria-hidden="true">
+    <span class="b1"></span>
+    <span class="b2"></span>
+    <span class="b3"></span>
+    <span class="b4"></span>
+    <span class="b5"></span>
+  </div>
+
   <span class="esquinas" aria-hidden="true"></span>
+
   <Image
     class="logo"
     src={logo}
@@ -55,8 +69,7 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
   .marca {
     container-type: inline-size;
     position: relative;
-    /* Los brillos se pintan mayores que el panel para que al girar no asome
-       ningún borde; esto los recorta. */
+    /* Las manchas se salen del panel al orbitar; esto las recorta. */
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -70,10 +83,13 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
       mismo color, y la de arriba es mucho más clara— sino un eje casi
       horizontal con dos esquinas marcadas encima.
     */
-    background:
-      radial-gradient(78% 88% at 100% 0%, #0a1424 0%, transparent 66%),
-      radial-gradient(85% 95% at 0% 100%, #75f268 0%, transparent 68%),
-      linear-gradient(100deg, #66acd9 0%, #3f8ed6 22%, #0a63cf 56%, #1c3a6b 100%);
+    background: linear-gradient(
+      100deg,
+      #66acd9 0%,
+      #3f8ed6 22%,
+      #0a63cf 56%,
+      #1c3a6b 100%
+    );
   }
 
   @media (min-width: 40rem) {
@@ -83,103 +99,114 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
   }
 
   /*
-    Nivel 2: los brillos, en dos capas que giran en sentidos opuestos y a
-    ritmos distintos (10s y 15s). Los ritmos distintos son lo que hace que se
-    vea vivo: como no son múltiplos, la combinación tarda medio minuto en
-    repetirse en vez de volver al mismo fotograma cada ciclo.
+    Nivel 2: cinco manchas, cada una de un color de la paleta y con su propia
+    órbita y duración (19s a 34s). Que las duraciones no sean múltiplos entre sí
+    es lo que hace que la combinación no vuelva al mismo fotograma: el ciclo
+    completo tarda minutos, así que nunca se ve un bucle.
 
-    Se gira en vez de mover `background-position` porque el giro se compone en
-    GPU y se nota mucho más: un brillo cruza el panel entero en vez de respirar
-    en su sitio.
-
-    Los cuatro brillos son de la familia azul, sin verde. El verde se probó y
-    se quitó: al girar acababa en la esquina de arriba a la derecha —la del
-    azul noche— y la teñía de verde oscuro. El verde se queda quieto en su
-    esquina, y lo que se mueve por encima es luz azul.
+    Los bordes se difuminan con el propio `radial-gradient` —de color a
+    `transparent`— en vez de con `filter: blur()`. El resultado se ve igual de
+    suave y no obliga al navegador a desenfocar un panel entero en cada
+    fotograma, que es lo caro.
   */
-  .marca::before,
-  .marca::after {
-    content: '';
-    position: absolute;
-    /* Un cuadrado mayor que el panel y centrado en él: al girar sobre su eje,
-       las esquinas nunca dejan hueco. */
-    width: 170cqw;
-    height: 170cqw;
-    top: 50%;
-    left: 50%;
-    margin: -85cqw 0 0 -85cqw;
-    pointer-events: none;
-  }
-
-  .marca::before {
-    background:
-      radial-gradient(circle at 34% 32%, rgb(122 190 230 / 0.78) 0%, transparent 46%),
-      radial-gradient(circle at 68% 60%, rgb(2 107 228 / 0.72) 0%, transparent 46%);
-    animation: marcaGiraA 10s linear infinite;
-  }
-
-  .marca::after {
-    background:
-      radial-gradient(circle at 66% 36%, rgb(140 205 235 / 0.62) 0%, transparent 44%),
-      radial-gradient(circle at 30% 66%, rgb(10 90 200 / 0.68) 0%, transparent 44%);
-    animation: marcaGiraB 15s linear infinite;
-  }
-
-  /*
-    Nivel 3: las dos esquinas repintadas encima del movimiento. Las paradas
-    intermedias de alfa son para que la caída sea suave: con un salto directo
-    de opaco a transparente, la esquina oscura se leía como un disco pegado
-    encima en vez de como el final del degradado.
-
-    El verde respira despacio en una capa aparte —solo escala, sin moverse de
-    sitio—, que es la forma de que participe del movimiento sin salirse.
-  */
-  .marca .esquinas {
+  .brillos {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    /*
-      Explícito y no por orden en el DOM: `::after` se inserta como último
-      hijo, así que la segunda capa de brillos se pintaba ENCIMA de estas
-      esquinas y volvía a aclarar el azul noche —medido, la esquina subía de
-      `#111e30` a `#20466e` a mitad del ciclo—. Con `z-index` las esquinas
-      quedan por encima de las dos capas que giran.
-    */
-    z-index: 1;
-    background:
-      radial-gradient(
-        98% 108% at 100% 0%,
-        #0a1424 0%,
-        rgb(10 20 36 / 0.88) 20%,
-        rgb(10 20 36 / 0.5) 44%,
-        transparent 76%
-      ),
-      radial-gradient(
-        78% 88% at 0% 100%,
-        #75f268 0%,
-        rgb(117 242 104 / 0.72) 24%,
-        transparent 70%
-      );
+  }
+
+  .brillos span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    /* El movimiento va en `transform`, que se compone en GPU. */
+    will-change: transform;
+  }
+
+  .b1 {
+    width: 95cqw;
+    height: 95cqw;
+    left: -25cqw;
+    bottom: -40cqw;
+    background: radial-gradient(circle, rgb(117 242 104 / 0.85) 0%, rgb(117 242 104 / 0) 62%);
+    animation: orbitaVertical 19s ease-in-out infinite;
+  }
+
+  .b2 {
+    width: 85cqw;
+    height: 85cqw;
+    left: 8cqw;
+    top: -18cqw;
+    background: radial-gradient(circle, rgb(102 172 217 / 0.8) 0%, rgb(102 172 217 / 0) 62%);
+    animation: orbitaCirculo 27s linear infinite;
+  }
+
+  .b3 {
+    width: 100cqw;
+    height: 100cqw;
+    right: -22cqw;
+    top: 12cqw;
+    background: radial-gradient(circle, rgb(2 107 228 / 0.85) 0%, rgb(2 107 228 / 0) 60%);
+    animation: orbitaHorizontal 23s ease-in-out infinite;
+  }
+
+  .b4 {
+    width: 80cqw;
+    height: 80cqw;
+    right: 4cqw;
+    bottom: -26cqw;
+    background: radial-gradient(circle, rgb(20 57 128 / 0.85) 0%, rgb(20 57 128 / 0) 62%);
+    animation: orbitaDiagonal 34s ease-in-out infinite;
+  }
+
+  .b5 {
+    width: 70cqw;
+    height: 70cqw;
+    left: 26cqw;
+    top: 22cqw;
+    background: radial-gradient(circle, rgb(2 107 228 / 0.7) 0%, rgb(2 107 228 / 0) 60%);
+    animation: orbitaCirculoInverso 31s linear infinite;
   }
 
   /*
-    El verde que respira va en su propia capa, no escalando `.esquinas`. Al
-    escalar la capa entera desde la esquina de abajo a la izquierda, la de
-    arriba a la derecha se salía del panel y el azul noche se aclaraba cada
-    ciclo — medido: la esquina pasaba de `#111e30` a `#20476e`. Aquí solo crece
-    el verde, anclado a su propio origen, y la esquina oscura no se entera.
+    Nivel 3: las dos esquinas por encima del movimiento. Las paradas
+    intermedias de alfa son para que la caída sea suave: con un salto directo
+    de opaco a transparente, la esquina oscura se leía como un disco pegado
+    encima en vez de como el final del degradado.
   */
-  .marca .esquinas::after {
+  .esquinas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+      radial-gradient(
+        92% 102% at 100% 0%,
+        #0a1424 0%,
+        rgb(10 20 36 / 0.82) 22%,
+        rgb(10 20 36 / 0.4) 48%,
+        transparent 78%
+      ),
+      radial-gradient(
+        74% 84% at 0% 100%,
+        #75f268 0%,
+        rgb(117 242 104 / 0.66) 26%,
+        transparent 72%
+      );
+  }
+
+  /* El verde respira en su propia capa, anclado a su esquina: escalar
+     `.esquinas` entera sacaba del panel la esquina opuesta y la aclaraba. */
+  .esquinas::after {
     content: '';
     position: absolute;
     inset: 0;
     background: radial-gradient(46% 54% at 0% 100%, rgb(117 242 104 / 0.8) 0%, transparent 62%);
     transform-origin: 0% 100%;
-    animation: marcaRespira 11s ease-in-out infinite alternate;
+    animation: respiraVerde 13s ease-in-out infinite alternate;
   }
 
-  /* El logotipo, por encima de todo. */
-  .marca .logo {
+  .logo {
     position: relative;
     z-index: 2;
     width: 69.7cqw;
@@ -187,53 +214,78 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
   }
 
   @media (min-width: 40rem) {
-    .marca .logo {
+    .logo {
       width: 43.5cqw;
     }
   }
 
-  @keyframes marcaGiraA {
-    from {
-      transform: rotate(0deg) scale(1);
+  @keyframes orbitaVertical {
+    0%,
+    100% {
+      transform: translateY(-24%);
     }
     50% {
-      transform: rotate(180deg) scale(1.14);
-    }
-    to {
-      transform: rotate(360deg) scale(1);
+      transform: translateY(24%);
     }
   }
 
-  @keyframes marcaRespira {
+  @keyframes orbitaHorizontal {
+    0%,
+    100% {
+      transform: translate(-28%, -9%);
+    }
+    50% {
+      transform: translate(28%, 9%);
+    }
+  }
+
+  @keyframes orbitaDiagonal {
+    0%,
+    100% {
+      transform: translate(-20%, 18%) scale(1);
+    }
+    50% {
+      transform: translate(20%, -18%) scale(1.12);
+    }
+  }
+
+  /* La segunda rotación deshace la primera, así que la mancha orbita sin girar
+     sobre sí misma — que en un círculo no se vería, pero sí en la escala. */
+  @keyframes orbitaCirculo {
+    from {
+      transform: rotate(0deg) translateX(16%) rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg) translateX(16%) rotate(-360deg);
+    }
+  }
+
+  @keyframes orbitaCirculoInverso {
+    from {
+      transform: rotate(360deg) translateX(20%) rotate(-360deg);
+    }
+    to {
+      transform: rotate(0deg) translateX(20%) rotate(0deg);
+    }
+  }
+
+  @keyframes respiraVerde {
     from {
       transform: scale(1);
     }
     to {
-      transform: scale(1.06);
-    }
-  }
-
-  @keyframes marcaGiraB {
-    from {
-      transform: rotate(360deg) scale(1.1);
-    }
-    50% {
-      transform: rotate(180deg) scale(1);
-    }
-    to {
-      transform: rotate(0deg) scale(1.1);
+      transform: scale(1.07);
     }
   }
 
   /*
     `global.css` recorta las duraciones a 0.01ms con reduced-motion, y en una
-    animación `infinite` eso deja el fondo parpadeando. Se apagan enteras: el
+    animación `infinite` eso deja el fondo parpadeando. Se apagan todas: el
     degradado se queda quieto, que es exactamente el board original.
   */
   @media (prefers-reduced-motion: reduce) {
-    .marca::before,
-    .marca::after,
-    .marca .esquinas::after {
+    .brillos span,
+    .esquinas::after {
       animation: none;
     }
   }
