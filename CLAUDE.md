@@ -225,6 +225,22 @@ El enlace de WhatsApp es un link `wa.me`, y el número va **sin** el `1` que Mé
 código de área en el marcado local: la guía de WhatsApp pide omitirlo en los links de clic-para-
 chatear, o el link no abre conversación.
 
+**El disco de About tampoco es una isla.** `Vinilo.astro` recorta la portada en círculo, la pone a
+girar y añade el control de abajo; todo el estado es un atributo que cambia un `<script>` de cuatro
+líneas, así que no necesita React.
+
+- El hueco del centro es una **máscara** (`radial-gradient` con `closest-side`), no un círculo
+  pintado del color del fondo: el agujero es transparente de verdad y sigue al tema. Sin
+  `closest-side` el radio se mide sobre la diagonal y el hueco sale un 40% más grande.
+- La máscara y el `overflow: hidden` van en el contenedor que gira, no en la `<img>`. Si algún día
+  se amplía la portada dentro del disco, un `transform: scale` sobre una imagen enmascarada agranda
+  también el hueco y se sale del contenedor.
+- El giro es `infinite`, así que `prefers-reduced-motion` necesita `animation: none` explícito: el
+  recorte a 0.01ms de `global.css` sobre un bucle no es "sin animación", es un parpadeo.
+- **Al pulsar play el disco se para**, no al revés — es lo que se pidió. No suena nada (no hay audio
+  en el repo) y el botón no lo finge: es el control de la rueda. El estado lo comunica
+  `aria-pressed`, por eso el `aria-label` se queda fijo.
+
 **Contenido que se anima ≠ contenido que no existe.** El HTML servido tiene que traer el contenido
 aunque el JS no llegue nunca. El título (`TituloRotativo.astro`) es el patrón: una versión plana en
 `sr-only` para buscadores y lectores de pantalla, y la parte visual con `aria-hidden` donde Astro
