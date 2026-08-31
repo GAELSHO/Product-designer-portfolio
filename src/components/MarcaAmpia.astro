@@ -100,11 +100,11 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
 
   /*
     Nivel 2: cinco manchas, cada una de un color de la paleta y con su propia
-    órbita y duración (9, 11, 13, 15 y 17 segundos). Los números son impares y
-    ninguno divide a otro a propósito: así la combinación tarda minutos en
-    volver al mismo fotograma y nunca se lee como un bucle. Si algún día se
-    cambian, conviene mantener esa propiedad — con duraciones que se dividan
-    entre sí (10 y 20, por ejemplo) el bucle se nota enseguida.
+    órbita y duración (5, 6, 7, 8 y 9 segundos). Ninguna duración divide a otra
+    a propósito: así la combinación tarda cuarenta minutos en volver al mismo
+    fotograma y nunca se lee como un bucle. Si algún día se cambian, conviene
+    mantener esa propiedad — con duraciones que se dividan entre sí (5 y 10,
+    por ejemplo) el bucle se nota enseguida.
 
     Los bordes se difuminan con el propio `radial-gradient` —de color a
     `transparent`— en vez de con `filter: blur()`. El resultado se ve igual de
@@ -131,7 +131,8 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     left: -25cqw;
     bottom: -40cqw;
     background: radial-gradient(circle, rgb(117 242 104 / 0.85) 0%, rgb(117 242 104 / 0) 62%);
-    animation: orbitaVertical 9s ease-in-out infinite;
+    --radio: 20%;
+    animation: orbita 5s linear infinite;
   }
 
   .b2 {
@@ -140,7 +141,8 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     left: 8cqw;
     top: -18cqw;
     background: radial-gradient(circle, rgb(102 172 217 / 0.8) 0%, rgb(102 172 217 / 0) 62%);
-    animation: orbitaCirculo 13s linear infinite;
+    --radio: 16%;
+    animation: orbitaInversa 7s linear infinite;
   }
 
   .b3 {
@@ -149,7 +151,8 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     right: -22cqw;
     top: 12cqw;
     background: radial-gradient(circle, rgb(2 107 228 / 0.85) 0%, rgb(2 107 228 / 0) 60%);
-    animation: orbitaHorizontal 11s ease-in-out infinite;
+    --radio: 24%;
+    animation: orbitaAncha 6s linear infinite;
   }
 
   .b4 {
@@ -158,7 +161,8 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     right: 4cqw;
     bottom: -26cqw;
     background: radial-gradient(circle, rgb(20 57 128 / 0.85) 0%, rgb(20 57 128 / 0) 62%);
-    animation: orbitaDiagonal 17s ease-in-out infinite;
+    --radio: 18%;
+    animation: orbitaInversa 9s linear infinite;
   }
 
   .b5 {
@@ -167,7 +171,8 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     left: 26cqw;
     top: 22cqw;
     background: radial-gradient(circle, rgb(2 107 228 / 0.7) 0%, rgb(2 107 228 / 0) 60%);
-    animation: orbitaCirculoInverso 15s linear infinite;
+    --radio: 22%;
+    animation: orbitaAncha 8s linear infinite;
   }
 
   /*
@@ -205,7 +210,7 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     inset: 0;
     background: radial-gradient(46% 54% at 0% 100%, rgb(117 242 104 / 0.8) 0%, transparent 62%);
     transform-origin: 0% 100%;
-    animation: respiraVerde 7s ease-in-out infinite alternate;
+    animation: respiraVerde 4s ease-in-out infinite alternate;
   }
 
   .logo {
@@ -221,53 +226,45 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     }
   }
 
-  @keyframes orbitaVertical {
-    0%,
-    100% {
-      transform: translateY(-24%);
-    }
-    50% {
-      transform: translateY(24%);
-    }
-  }
+  /*
+    Órbitas continuas y `linear`, no vaivenes con `ease-in-out`. El motivo es
+    que se vea moverse **en el primer segundo**: un vaivén suavizado pasa los
+    extremos de cada ciclo casi parado, así que quien llega en ese momento ve
+    una imagen quieta. Girando en redondo y a ritmo constante no hay ningún
+    instante lento.
 
-  @keyframes orbitaHorizontal {
-    0%,
-    100% {
-      transform: translate(-28%, -9%);
-    }
-    50% {
-      transform: translate(28%, 9%);
-    }
-  }
-
-  @keyframes orbitaDiagonal {
-    0%,
-    100% {
-      transform: translate(-20%, 18%) scale(1);
-    }
-    50% {
-      transform: translate(20%, -18%) scale(1.12);
-    }
-  }
-
-  /* La segunda rotación deshace la primera, así que la mancha orbita sin girar
-     sobre sí misma — que en un círculo no se vería, pero sí en la escala. */
-  @keyframes orbitaCirculo {
+    La segunda rotación deshace la primera: la mancha recorre el círculo sin
+    girar sobre sí misma. El radio lo pone cada una con `--radio`.
+  */
+  @keyframes orbita {
     from {
-      transform: rotate(0deg) translateX(16%) rotate(0deg);
+      transform: rotate(0deg) translateX(var(--radio)) rotate(0deg);
     }
     to {
-      transform: rotate(360deg) translateX(16%) rotate(-360deg);
+      transform: rotate(360deg) translateX(var(--radio)) rotate(-360deg);
     }
   }
 
-  @keyframes orbitaCirculoInverso {
+  @keyframes orbitaInversa {
     from {
-      transform: rotate(360deg) translateX(20%) rotate(-360deg);
+      transform: rotate(360deg) translateX(var(--radio)) rotate(-360deg);
     }
     to {
-      transform: rotate(0deg) translateX(20%) rotate(0deg);
+      transform: rotate(0deg) translateX(var(--radio)) rotate(0deg);
+    }
+  }
+
+  /* Igual que `orbita`, con un latido de escala encima para que las cinco no
+     se muevan todas igual. */
+  @keyframes orbitaAncha {
+    from {
+      transform: rotate(0deg) translateX(var(--radio)) rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) translateX(var(--radio)) rotate(-180deg) scale(1.14);
+    }
+    to {
+      transform: rotate(360deg) translateX(var(--radio)) rotate(-360deg) scale(1);
     }
   }
 
