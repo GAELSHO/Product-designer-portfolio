@@ -63,6 +63,16 @@ const sizes = '(min-width: 72rem) 700px, (min-width: 40rem) 62vw, 118vw';
     background: #08090c;
     color: #fff;
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    /*
+      En móvil los dos bloques van en flujo, uno debajo del otro. Se hizo así
+      —y no con `top` en porcentaje— porque el alto del texto depende del
+      cuerpo de letra y de dónde parta cada línea: con una posición fija, en
+      cuanto el texto crece un poco el teléfono se le monta encima. En flujo
+      el teléfono siempre queda debajo, salga como salga el texto.
+    */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   @media (min-width: 40rem) {
@@ -77,15 +87,15 @@ const sizes = '(min-width: 72rem) 700px, (min-width: 40rem) 62vw, 118vw';
     salen medidos del board original.
   */
   .contenido {
-    position: absolute;
-    z-index: 1;
-    left: 11.4%;
-    top: 10%;
+    margin: 13% 0 0 11.4%;
     width: 88%;
   }
 
   @media (min-width: 40rem) {
     .contenido {
+      position: absolute;
+      z-index: 1;
+      margin: 0;
       left: 8.07%;
       top: 50%;
       transform: translateY(-50%);
@@ -105,7 +115,7 @@ const sizes = '(min-width: 72rem) 700px, (min-width: 40rem) 62vw, 118vw';
     color: inherit;
     /* El suelo del clamp es lo que evita que la línea más larga ("Branding and
        UX design for AMPIA,") parta en dos en un móvil de 320px. */
-    font-size: clamp(0.875rem, 4.4cqw, 1.125rem);
+    font-size: clamp(0.8125rem, 2.92cqw, 1.125rem);
     font-weight: 300;
     line-height: 1.5;
     letter-spacing: -0.02em;
@@ -155,10 +165,16 @@ const sizes = '(min-width: 72rem) 700px, (min-width: 40rem) 62vw, 118vw';
     el precio de que la frase se lea, y se paga aquí.
   */
   .intro .telefono {
-    position: absolute;
-    left: -9.6%;
-    top: 43%;
-    width: 130cqw;
+    /* Los márgenes en % se resuelven contra el ANCHO del contenedor, también
+       el de arriba: 6.25% del ancho son los 5% del alto que separan la barra
+       del teléfono en el board (el panel es 4:5).
+
+       El 7% de la izquierda no es donde empieza el teléfono: el PNG lleva un
+       11% de transparencia a su izquierda, así que el cuerpo arranca en el
+       ~17.7% del panel y el lado derecho se sale por el borde, como en el
+       board. */
+    margin: 6.25% 0 0 7%;
+    width: 97cqw;
     height: auto;
     /* `image.layout: 'constrained'` le pone `max-width: 100%`, que recortaba
        el teléfono al ancho del panel justo cuando lo que se busca es que se
@@ -168,6 +184,8 @@ const sizes = '(min-width: 72rem) 700px, (min-width: 40rem) 62vw, 118vw';
 
   @media (min-width: 40rem) {
     .intro .telefono {
+      position: absolute;
+      margin: 0;
       left: 48.7%;
       top: 18.7%;
       width: 55.4cqw;
