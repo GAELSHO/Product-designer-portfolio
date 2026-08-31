@@ -1,0 +1,138 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * Tercera pieza del case study de AMPIA: el logotipo sobre el degradado de
+ * marca. Era el board 03 de las dos secuencias.
+ *
+ * Aquí lo que sale de la imagen no es texto sino el fondo: el board era un JPG
+ * de 5120px que se descargaba entero para pintar un degradado, y en código son
+ * cuatro líneas de CSS que además se mueven. Lo único que sigue siendo imagen
+ * es el logotipo (`AMPIA logotipo claro.png`), que es una marca y no se compone
+ * con CSS.
+ *
+ * Los cinco colores son los de la paleta (board 06), los mismos que usa
+ * `BarraAmpia`: la barra los recorre en horizontal y aquí se abren en diagonal
+ * —verde abajo-izquierda, azul noche arriba-derecha— que es como estaba el
+ * board. El `linear-gradient` del fondo es el que sostiene esa identidad; los
+ * radiales de encima son los que se mueven, así que la diagonal nunca se pierde
+ * por mucho que respire.
+ *
+ * Proporciones medidas del board original: el logotipo ocupa el 34.5% del ancho
+ * del panel en desktop y el 55.3% en móvil, centrado en ambos.
+ */
+interface Props {
+  /** `AMPIA logotipo claro.png`, importado desde el `.mdx`. */
+  logo: ImageMetadata;
+}
+
+const { logo } = Astro.props;
+
+// El PNG lleva transparencia alrededor: el trazo ocupa el 79.3% del ancho del
+// archivo. Para que el logotipo se vea al 34.5% del panel, la imagen tiene que
+// medir 34.5 / 0.793 = 43.5%; en móvil, 55.3 / 0.793 = 69.7%.
+const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
+---
+
+<div class="marca">
+  <Image
+    class="logo"
+    src={logo}
+    alt="AMPIA"
+    widths={[320, 480, 640, 960, 1280, 1440]}
+    sizes={sizes}
+    loading="lazy"
+  />
+</div>
+
+<style>
+  .marca {
+    container-type: inline-size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 5;
+    /*
+      El degradado del board, reconstruido por capas. Las esquinas medidas son
+      verde `#75f266` abajo-izquierda, azul claro `#6db6e2` arriba-izquierda,
+      azul noche `#050a24` arriba-derecha y azul medio `#1e3a6e` abajo-derecha.
+      Eso NO es una diagonal limpia: si lo fuera, las dos esquinas de en medio
+      saldrían del mismo color, y aquí la de arriba es mucho más clara. Es un
+      eje casi horizontal —claro a la izquierda, azul a la derecha— con dos
+      esquinas marcadas encima, el verde abajo-izquierda y el azul noche
+      arriba-derecha.
+
+      De ahí las capas: el `linear-gradient` pone el eje, dos radiales fijan
+      esas dos esquinas, y encima van dos brillos translúcidos que son los
+      únicos que se mueven. Translúcidos a propósito: opacos tapaban el eje y
+      el fondo se volvía verde entero.
+    */
+    background:
+      radial-gradient(50% 60% at 30% 22%, rgb(102 172 217 / 0.5) 0%, transparent 62%),
+      radial-gradient(48% 58% at 72% 78%, rgb(2 107 228 / 0.26) 0%, transparent 62%),
+      radial-gradient(78% 88% at 100% 0%, #0a1424 0%, transparent 66%),
+      radial-gradient(85% 95% at 0% 100%, #75f268 0%, transparent 68%),
+      linear-gradient(100deg, #66acd9 0%, #3f8ed6 22%, #0a63cf 56%, #1c3a6b 100%);
+    /* Solo los dos brillos se pintan mayores que el panel para poder pasear;
+       las dos esquinas y el eje se quedan a tamaño y no se mueven. */
+    background-size: 170% 170%, 170% 170%, 100% 100%, 100% 100%, 100% 100%;
+    animation: marcaViva 16s ease-in-out infinite alternate;
+  }
+
+  @media (min-width: 40rem) {
+    .marca {
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  .marca .logo {
+    width: 69.7cqw;
+    height: auto;
+  }
+
+  @media (min-width: 40rem) {
+    .marca .logo {
+      width: 43.5cqw;
+    }
+  }
+
+  /* Solo pasean los dos brillos; las esquinas y el eje se quedan quietos. */
+  @keyframes marcaViva {
+    0% {
+      background-position:
+        10% 15%,
+        85% 90%,
+        100% 0%,
+        0% 100%,
+        50% 50%;
+    }
+    50% {
+      background-position:
+        45% 40%,
+        55% 60%,
+        100% 0%,
+        0% 100%,
+        50% 50%;
+    }
+    100% {
+      background-position:
+        25% 5%,
+        70% 95%,
+        100% 0%,
+        0% 100%,
+        50% 50%;
+    }
+  }
+
+  /*
+    `global.css` recorta las duraciones a 0.01ms con reduced-motion, y en una
+    animación `infinite` eso deja el fondo parpadeando. Se apaga entera: el
+    degradado se queda quieto, que es exactamente el board original.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .marca {
+      animation: none;
+    }
+  }
+</style>

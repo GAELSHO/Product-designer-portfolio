@@ -310,8 +310,16 @@ escribirlo en el `.mdx` como texto normal: se reordena solo, se lee igual a cual
 puede seleccionar y Google lo indexa. Los estilos de párrafos y encabezados ya están puestos por si
 hace falta; la columna de lectura se queda en `62ch` aunque los boards ocupen el ancho entero.
 
-AMPIA ya tiene dos piezas así, y sirven de plantilla: `IntroAmpia.astro` (era el board 02, texto
-más el mockup del teléfono) y `CierreAmpia.astro` (era el último). Comparten `BarraAmpia.astro`, la
+AMPIA ya tiene tres piezas así, y sirven de plantilla: `IntroAmpia.astro` (era el board 02, texto
+más el mockup del teléfono), `MarcaAmpia.astro` (era el board 03, el logotipo sobre el degradado) y
+`CierreAmpia.astro` (era el último).
+
+`MarcaAmpia` es el caso en que lo que sale de la imagen no es el texto sino **el fondo**: el board
+era un archivo de 5120px que se descargaba entero para pintar un degradado. Reconstruirlo pide
+medir, no mirar: las cuatro esquinas del board no salen de una diagonal limpia —si lo fueran, las
+dos esquinas de en medio darían el mismo color— sino de un eje casi horizontal con dos esquinas
+marcadas encima, el verde abajo-izquierda y el azul noche arriba-derecha. Van como capas separadas
+para que solo se muevan los brillos y el eje no se pierda. Comparten `BarraAmpia.astro`, la
 barra de degradado, que se dimensiona desde fuera con `--barra-ancho` / `--barra-alto` porque no
 mide lo mismo en las dos. Cosas que tuvieron que resolver y que se repetirán:
 
