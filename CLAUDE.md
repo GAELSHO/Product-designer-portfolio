@@ -36,6 +36,8 @@ src/
     vendor/     Otros componentes de terceros pegados tal cual (DiaTextReveal)
   content/    work/<slug>/: un proyecto = una carpeta (index.md + sus imágenes)
   content.config.ts  Esquema Zod de la colección `work`
+  assets/     Imágenes de páginas sueltas (no de un proyecto): se procesan con
+              `<Image>` de `astro:assets`, igual que las de `content/work/`
   lib/        Helpers TS (url.ts, utils.ts)
   styles/     global.css: import de Tailwind + tokens @theme
 public/       Assets servidos tal cual (favicon, portadas, PDFs)

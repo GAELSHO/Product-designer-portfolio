@@ -5,6 +5,8 @@ import TarjetaProyecto from '@/components/TarjetaProyecto.astro';
 import Servicios from '@/components/Servicios.astro';
 import { getCollection } from 'astro:content';
 import { withBase } from '@/lib/url';
+import { Image } from 'astro:assets';
+import fotoAbout from '@/assets/aboutme.png';
 
 const proyectos = (await getCollection('work')).sort((a, b) => a.data.orden - b.data.orden);
 
@@ -75,14 +77,41 @@ const proyectos = (await getCollection('work')).sort((a, b) => a.data.orden - b.
 
   <Servicios />
 
-  <section id="about" class="mt-24 max-w-2xl scroll-mt-28">
-    <h2 class="text-ink-500 text-sm font-medium tracking-widest uppercase">About</h2>
-    <p class="mt-6 text-lg text-pretty">
-      Write your bio here: what kind of product you work on, how you work, and what you are looking
-      for right now.
-    </p>
-    <a class="mt-6 inline-block font-medium underline underline-offset-4" href="mailto:gaelsho10@gmail.com">
-      gaelsho10@gmail.com
-    </a>
+  <section id="about" class="mt-24 scroll-mt-28">
+    {/* Mismo peso que "Our Services": título grande en mayúsculas con una
+        línea debajo, no la etiqueta pequeña que llevaba antes. */}
+    <h2 class="text-[clamp(2.25rem,5.5vw,3.75rem)] font-semibold tracking-tight uppercase">
+      About Me
+    </h2>
+
+    {/* Texto arriba y foto debajo en móvil; en desktop van a dos columnas, la
+        misma ruptura (`lg:`) que usa Servicios para su columna fija + cards. */}
+    <div class="border-ink-100 mt-8 grid gap-10 border-t pt-14 sm:pt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
+      <div class="max-w-2xl">
+        <p class="text-lg text-pretty">
+          Write your bio here: what kind of product you work on, how you work, and what you are
+          looking for right now.
+        </p>
+        <a
+          class="mt-6 inline-block font-medium underline underline-offset-4"
+          href="mailto:gaelsho10@gmail.com"
+        >
+          gaelsho10@gmail.com
+        </a>
+      </div>
+
+      {/* La nota de papel ya lleva su propia sombra y su borde irregular, así
+          que va sin marco ni radio propios —cualquiera de los dos se vería
+          encima del que trae la pieza—. El `alt` no es decorativo: repite la
+          frase de la nota, que es el único texto real que trae la imagen. */}
+      <Image
+        src={fotoAbout}
+        alt="Gael SHO standing in front of a whiteboard covered in colour-coded sticky notes, with a torn paper note clipped over the photo reading: I'm a 24-year-old designer passionate about combining design and software development to solve real-world problems."
+        widths={[320, 480, 640, 860]}
+        sizes="(min-width: 64rem) 32rem, (min-width: 40rem) 24rem, 80vw"
+        class="mx-auto w-full max-w-sm lg:mx-0 lg:max-w-md"
+        loading="lazy"
+      />
+    </div>
   </section>
 </BaseLayout>
