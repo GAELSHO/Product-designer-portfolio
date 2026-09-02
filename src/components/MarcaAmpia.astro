@@ -1,6 +1,5 @@
 ---
-import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 
 /**
  * Tercera pieza del case study de AMPIA: el logotipo sobre el degradado de
@@ -8,7 +7,7 @@ import type { ImageMetadata } from 'astro';
  *
  * Aquí lo que sale de la imagen no es texto sino el fondo: el board era un
  * archivo de 5120px que se descargaba entero para pintar un degradado. Lo único
- * que sigue siendo imagen es el logotipo, que es una marca.
+ * que no es CSS es el logotipo, y va en SVG en línea: ni una petición más.
  *
  * El fondo va en tres niveles, y el orden importa:
  *
@@ -32,16 +31,20 @@ import type { ImageMetadata } from 'astro';
  * del panel en desktop y el 55.3% en móvil, centrado en ambos.
  */
 interface Props {
-  /** `AMPIA logotipo claro.png`, importado desde el `.mdx`. */
-  logo: ImageMetadata;
+  /**
+   * `AMPIA logo claro.svg`, importado desde el `.mdx`. Astro convierte un
+   * import de `.svg` en un componente que se pinta en línea, así que el
+   * logotipo no es una imagen que se descargue: es vectorial, va nítido a
+   * cualquier densidad y a cualquier zoom, y no cuesta ninguna petición.
+   *
+   * Antes era el PNG de 7770px. No se veía mal —el navegador nunca lo
+   * ampliaba— pero un raster a 1:1 es el techo, no lo máximo: el vector se
+   * rasteriza a la resolución real del dispositivo, sea la que sea.
+   */
+  logo: AstroComponentFactory;
 }
 
-const { logo } = Astro.props;
-
-// El PNG lleva transparencia alrededor: el trazo ocupa el 79.3% del ancho del
-// archivo. Para que el logotipo se vea al 34.5% del panel, la imagen tiene que
-// medir 34.5 / 0.793 = 43.5%; en móvil, 55.3 / 0.793 = 69.7%.
-const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
+const { logo: Logo } = Astro.props;
 ---
 
 <div class="marca">
@@ -55,14 +58,9 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
 
   <span class="esquinas" aria-hidden="true"></span>
 
-  <Image
-    class="logo"
-    src={logo}
-    alt="AMPIA"
-    widths={[320, 480, 640, 960, 1280, 1440]}
-    sizes={sizes}
-    loading="lazy"
-  />
+  {/* Un `<svg>` no tiene texto alternativo propio: el nombre accesible lo dan
+      `role="img"` y el `aria-label`, que es lo que hacía el `alt`. */}
+  <Logo class="logo" role="img" aria-label="AMPIA" />
 </div>
 
 <style>
@@ -213,11 +211,18 @@ const sizes = '(min-width: 72rem) 480px, (min-width: 40rem) 43.5vw, 69.7vw';
     animation: respiraVerde 4s ease-in-out infinite alternate;
   }
 
+  /* El SVG trae el mismo aire alrededor que traía el PNG: el trazo ocupa el
+     79.2% del ancho del `viewBox` (el PNG medía 79.3%), así que los anchos no
+     cambian. Para que el logotipo se lea al 34.5% del panel —lo medido del
+     board original— la caja tiene que medir 34.5 / 0.792 = 43.5%; en móvil,
+     55.3 / 0.792 = 69.7%. */
   .logo {
     position: relative;
     z-index: 2;
     width: 69.7cqw;
     height: auto;
+    /* El SVG pinta con `currentColor`. */
+    color: #fff;
   }
 
   @media (min-width: 40rem) {

@@ -339,7 +339,13 @@ dos esquinas de en medio darían el mismo color— sino de un eje casi horizonta
 marcadas encima, el verde abajo-izquierda y el azul noche arriba-derecha. Van como capas separadas
 para que solo se muevan los brillos y el eje no se pierda. Comparten `BarraAmpia.astro`, la
 barra de degradado, que se dimensiona desde fuera con `--barra-ancho` / `--barra-alto` porque no
-mide lo mismo en las dos. Cosas que tuvieron que resolver y que se repetirán:
+mide lo mismo en las dos. **El logotipo va en SVG en línea**, no como `<Image>`: Astro
+convierte un import de `.svg` en un componente, así que la marca se pinta dentro del HTML —nítida a
+cualquier densidad y a cualquier zoom, y sin una petición—. Un `<svg>` no tiene `alt`: el nombre
+accesible lo dan `role="img"` y `aria-label`. Ojo con lo que trae un SVG de Illustrator: el
+`<defs><style>` con clases tipo `.cls-1` aplica a **todo el documento** cuando el SVG va en línea, y
+el `id="Layer_1"` se duplica al pintarse la pieza dos veces (móvil y desktop); los dos se quitan y
+el color va en `fill="currentColor"`. Cosas que tuvieron que resolver y que se repetirán:
 
 - **Dónde va depende de si remata la pila.** `CierreAmpia` va una sola vez y fuera de las dos
   secuencias, porque es la última pieza y se puede sacar de ahí. `IntroAmpia` cae en mitad de la
